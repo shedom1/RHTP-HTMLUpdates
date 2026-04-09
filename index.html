@@ -1,417 +1,1156 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RHTP State Opportunity Tracker | Interactive Master | April 7, 2026</title>
-  <style>
-    :root{--navy:#12395b;--blue:#1f5f97;--light:#eaf3fb;--ink:#1f2937;--muted:#5b6470;--line:#d8dee6;--green:#0f8b5f;--amber:#b96a00;--red:#c2410c;--gray:#6b7280;--gold:#c68a00;--bg:#f7f9fc}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg);line-height:1.4}
-    .page{max-width:1380px;margin:24px auto;background:#fff;border:1px solid var(--line);box-shadow:0 10px 30px rgba(18,57,91,.08)}
-    .hero{padding:28px 34px 22px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
-    .hero h1{margin:0 0 8px;font-size:30px;line-height:1.15}
-    .hero p{margin:0;max-width:980px;font-size:15px;opacity:.96}
-    .hero-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-    .hero-links a,.hero-links button{display:inline-block;padding:8px 12px;border:1px solid rgba(255,255,255,.28);border-radius:999px;color:#fff;text-decoration:none;font-size:12px;background:rgba(255,255,255,.08);cursor:pointer}
-    .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 34px;border-bottom:1px solid var(--line);background:#fbfdff;font-size:13px}
-    .meta div{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
-    .section{padding:22px 34px 8px}
-    .section h2{margin:0 0 10px;color:var(--navy);font-size:20px}
-    .section p{margin:0 0 14px;color:var(--muted);font-size:14px}
-    .toolrow,.keyword-panel,.dev-check,.export-note{margin:0 34px 16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfdff;color:var(--muted);font-size:12px}
-    .toolrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-    .toolrow button{padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--navy);font-size:11px;font-weight:800;cursor:pointer}
-    .toolrow button.is-off{background:#f3f4f6;color:var(--gray);border-color:#d1d5db}
-    .toolrow select,.toolrow input{padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font-size:11px}
-    .toolrow label{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--navy)}
-    .keyword-panel h3{margin:0 0 8px;color:var(--navy);font-size:16px}
-    .keyword-panel p{margin:0 0 10px}
-    .keyword-chips{display:flex;flex-wrap:wrap;gap:8px}
-    .keyword-chip{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.2px;border:1px solid transparent;white-space:nowrap}
-    .kw-proc,.keyword-chip.kw-proc{background:#e8f0ff;color:#1d4ed8;border-color:#bfd3ff}
-    .kw-fund,.keyword-chip.kw-fund{background:#e8fbef;color:#0f8b5f;border-color:#bfe8cc}
-    .kw-intent,.keyword-chip.kw-intent{background:#fff4e5;color:#b96a00;border-color:#f0d3a2}
-    .kw-event,.keyword-chip.kw-event{background:#f4eaff;color:#7c3aed;border-color:#dcc7ff}
-    .kw-award,.keyword-chip.kw-award{background:#fdecec;color:#c2410c;border-color:#f3c8bc}
-    table{width:calc(100% - 68px);margin:0 34px 28px;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
-    thead th{background:var(--light);color:var(--navy);text-align:left;border:1px solid var(--line);padding:11px 10px;vertical-align:top;position:relative}
-    tbody td{border:1px solid var(--line);padding:10px;vertical-align:top}
-    tbody tr:nth-child(even){background:#fcfdff}
-    .sortable{cursor:pointer;user-select:none;padding-right:22px!important}
-    .sortable::after{content:attr(data-indicator);position:absolute;right:8px;top:11px;font-size:11px;color:var(--blue)}
-    .status{display:inline-block;padding:4px 8px;border-radius:999px;font-size:10.5px;font-weight:800;letter-spacing:.25px;text-transform:uppercase;white-space:nowrap}
-    .active{background:#e7f7ef;color:var(--green)}
-    .forecast{background:#fff4e5;color:var(--amber)}
-    .closed{background:#fbe9e7;color:var(--red)}
-    .monitor{background:#eef2f7;color:var(--gray)}
-    a{color:var(--blue);word-break:break-word}
-    .updated-star{color:var(--gold);font-weight:700;margin-left:4px}
-    .hidden-row{display:none!important}
-    .hidden-col{display:none!important}
-    .link-cell a{display:block;margin-bottom:4px;font-weight:700}
-    .resize-handle{position:absolute;top:0;right:0;width:8px;height:100%;cursor:col-resize;user-select:none}
-    .callouts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 34px 28px}
-    .card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}
-    .card h3{margin:0 0 8px;color:var(--navy);font-size:16px}
-    .card p{margin:0;color:var(--muted);font-size:13px}
-    .footer{padding:18px 34px 30px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
-    @media print{body{background:#fff}.page{margin:0;border:none;box-shadow:none}.hero-links,.toolrow,.dev-check,.export-note{display:none}a{color:#000;text-decoration:underline}thead{display:table-header-group}tr{page-break-inside:avoid}table{font-size:11px}}
-    @media (max-width:1100px){.meta,.callouts{grid-template-columns:1fr 1fr}}
-    @media (max-width:720px){.meta,.callouts{grid-template-columns:1fr}.hero-links,.toolrow{flex-direction:column;align-items:flex-start}}
-  </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RHTP State Opportunity Tracker | April 9, 2026</title>
+<style>
+    :root {
+      --navy: #12395b;
+      --blue: #1f5f97;
+      --light-blue: #eaf3fb;
+      --ink: #1f2937;
+      --muted: #5b6470;
+      --line: #d8dee6;
+      --green: #0f8b5f;
+      --amber: #b96a00;
+      --red: #c2410c;
+      --gray: #6b7280;
+      --bg: #f7f9fc;
+      --update: #1d4ed8;
+      --update-bg: #eef4ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.4;
+    }
+    .page {
+      max-width: 1440px;
+      margin: 24px auto;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(18,57,91,.08);
+    }
+    .hero {
+      padding: 28px 34px 22px;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: #fff;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.15;
+      letter-spacing: .2px;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 1020px;
+      font-size: 15px;
+      opacity: .96;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      padding: 18px 34px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfdff;
+      font-size: 13px;
+    }
+    .meta div {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+    .section {
+      padding: 22px 34px 8px;
+    }
+    .section h2 {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-size: 20px;
+    }
+    .section p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .controls {
+      margin: 0 34px 14px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfdff;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .controls input[type="search"],
+    .controls select {
+      width: 100%;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 13px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 13px;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .btn {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn:hover { background: var(--light-blue); }
+    .sort-note {
+      margin: 0 34px 16px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .count-chip {
+      font-weight: 700;
+      color: var(--navy);
+    }
+    table {
+      width: calc(100% - 68px);
+      margin: 0 34px 28px;
+      border-collapse: collapse;
+      font-size: 12.6px;
+    }
+    thead th {
+      background: var(--light-blue);
+      color: var(--navy);
+      text-align: left;
+      border: 1px solid var(--line);
+      padding: 11px 10px;
+      vertical-align: top;
+      position: relative;
+    }
+    .resize-handle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 8px;
+      height: 100%;
+      cursor: col-resize;
+      user-select: none;
+      touch-action: none;
+    }
+    tbody td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: #fcfdff; }
+    tbody tr.updated-row { background: var(--update-bg); }
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .25px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .active { background: #e7f7ef; color: var(--green); }
+    .forecast { background: #fff4e5; color: var(--amber); }
+    .closed { background: #fbe9e7; color: var(--red); }
+    .monitor { background: #eef2f7; color: var(--gray); }
+    .update-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--update-bg);
+      color: var(--update);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .15px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .callouts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 0 34px 28px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 16px;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .footer {
+      padding: 18px 34px 30px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    a { color: var(--blue); word-break: break-word; }
+    .sortable {
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      padding-right: 22px !important;
+    }
+    .sortable::after {
+      content: attr(data-indicator);
+      position: absolute;
+      right: 8px;
+      top: 11px;
+      font-size: 11px;
+      color: var(--blue);
+    }
+    .hidden-row { display: none; }
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; border: none; box-shadow: none; }
+      .controls, .sort-note button { display: none !important; }
+      a { color: #000; text-decoration: none; }
+    }
+    @media (max-width: 1200px) {
+      .meta { grid-template-columns: repeat(3, 1fr); }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .callouts { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px) {
+      .meta, .controls, .callouts { grid-template-columns: 1fr; }
+      .sort-note { display: block; }
+    }
+  
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .hero-links a {
+      display: inline-block;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      background: rgba(255,255,255,.08);
+    }
+    .subcontrols {
+      margin: 0 34px 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfdff;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .subcontrols label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .subcontrols select {
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 13px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .compact-check {
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+    .subcontrols-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+
+    .key-links a { display: block; margin-bottom: 4px; font-weight: 700; }
+    .key-links a:last-child { margin-bottom: 0; }
+</style>
 </head>
 <body>
-  <div class="page">
-    <div class="hero">
-      <h1>RHTP State Opportunity Tracker | Grants Program Services</h1>
-      <p>Interactive working master for weekly RHTP refreshes across all 50 states. Built for sales-team tracking of A/V, telehealth, cybersecurity, digital-health, and care-coordination opportunities.</p>
-      <div class="hero-links"><a href="#trackerSection">Opportunity Tracker</a><a href="#eventsSection">Conferences, Events &amp; Webinars</a><a href="#resourcesSection">Official Resources</a><button type="button" onclick="exportPdf()">Export PDF</button></div>
+<div class="page">
+<div class="hero">
+<h1>RHTP State Opportunity Tracker</h1>
+<p>All-50-state tracker for A/V, telehealth, cybersecurity, digital-health, interoperability, remote monitoring, and care-coordination opportunities under the Rural Health Transformation Program. Built for sales-team sharing and weekly refresh.</p><div class="hero-links"><a href="#trackerSection">Opportunity Tracker</a><a href="#eventsSection">Conferences, Events &amp; Webinars</a><a href="#resourcesSection">Official Resources</a></div>
+</div>
+<div class="meta">
+<div><strong>Last verified:</strong> April 9, 2026</div>
+<div><strong>States included:</strong> 50</div>
+<div><strong>New / changed rows:</strong> 41</div>
+<div><strong>Sortable fields:</strong> State and Region</div>
+<div><strong>Regions used:</strong> Mid-Atlantic, Northeast, Southeast, West</div>
+</div>
+<div class="section" id="trackerSection">
+<h2>How to use this tracker</h2>
+<p>Use the search and dropdown filters to isolate states fast. “Active” means a live application, solicitation, or clearly open package. “Recently closed” means a recent cycle just ended but is still useful for partner mapping. “Forecasted” means an official source points to a coming window, webinar, or rollout stage. “Monitor” means the state is strategically relevant, but no public competitive dates were posted on official sources reviewed as of the verification date.</p>
+<p>To show what changed without using stars, rows added or materially updated in this refresh carry the blue <strong>Updated this refresh</strong> tag and can be isolated with the <strong>Updated only</strong> filter.</p>
+</div>
+<div class="controls">
+<input id="searchInput" oninput="applyFilters()" placeholder="Search state, signal, fit, or source" type="search"/>
+<select id="statusFilter" onchange="applyFilters()">
+<option value="">All statuses</option>
+<option value="Active">Active</option>
+<option value="Recently closed">Recently closed</option>
+<option value="Forecasted">Forecasted</option>
+<option value="Monitor">Monitor</option>
+</select>
+<select id="regionFilter" onchange="applyFilters()">
+<option value="">All regions</option>
+<option value="Southeast">Southeast</option>
+<option value="Northeast">Northeast</option>
+<option value="Mid-Atlantic">Mid-Atlantic</option>
+<option value="West">West</option>
+</select>
+<label class="check"><input id="updatedOnly" onchange="applyFilters()" type="checkbox"/> Updated only</label>
+<button class="btn" onclick="resetFilters()">Reset</button>
+</div>
+<div class="sort-note">
+<div>Tip: click <strong>State</strong> or <strong>Region</strong> once for ascending order and again for descending order.</div>
+<div class="count-chip" id="visibleCount">Showing 50 of 50 states</div>
+</div>
+<table id="trackerTable">
+<thead>
+<tr>
+<th class="sortable" data-indicator="▲" id="stateHeader" onclick="sortRows('state')" style="width:10%">State</th>
+<th class="sortable" data-indicator="↕" id="regionHeader" onclick="sortRows('region')" style="width:9%">Region</th>
+<th style="width:10%">Status</th>
+<th style="width:19%">Current signal</th>
+<th style="width:12%">Open / posted</th>
+<th style="width:14%">Close / next date</th>
+<th style="width:16%">Solutionz fit</th>
+<th style="width:10%">Primary source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="updated-row" data-region="Southeast" data-state="Alabama" data-status="Monitor" data-updated="true">
+<td><strong>Alabama</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Official program page is live and Year 1 award is posted, but no public RFA/RFP dates were found.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://adeca.alabama.gov/alruralhealth/">Alabama rural health page</a></div></td>
+</tr>
+<tr class="" data-region="West" data-state="Alaska" data-status="Recently closed" data-updated="false">
+<td><strong>Alaska</strong></td>
+<td>West</td>
+<td><span class="status closed">Recently closed</span></td>
+<td>First LOI registration round closed after heavy response; additional funding rounds are expected over the life of the program.</td>
+<td>Feb. 17, 2026</td>
+<td>Mar. 11, 2026</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://health.alaska.gov/en/education/rural-health-transformation-program/">Alaska RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Arizona" data-status="Forecasted" data-updated="true">
+<td><strong>Arizona</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Official toolkit says NOFOs and RFPs are expected to begin in the March-April 2026 window.</td>
+<td>Toolkit update Jan. 30, 2026</td>
+<td>Next public release TBD</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.azahcccs.gov/AHCCCS/Initiatives/RHTP/">Arizona RHTP page</a><a href="https://crh.arizona.edu/arizona-rural-health-transformation-program-toolkit">Arizona RHTP toolkit</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Southeast" data-state="Arkansas" data-status="Monitor" data-updated="true">
+<td><strong>Arkansas</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Governor and state materials are public, but no dated competitive subgrant or procurement window was posted on official pages reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://governor.arkansas.gov/arkansas-rural-health-transformation-program-application/">Arkansas official application page</a></div></td>
+</tr>
+<tr class="" data-region="West" data-state="California" data-status="Monitor" data-updated="false">
+<td><strong>California</strong></td>
+<td>West</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Program page, FAQs, and budget materials are live; stakeholder webinar activity continues, but no public competitive dates were posted.</td>
+<td>Program active</td>
+<td>Spring webinar Apr. 21, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://hcai.ca.gov/workforce/health-workforce/california-state-office-of-rural-health/">California rural health page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Colorado" data-status="Recently closed" data-updated="true">
+<td><strong>Colorado</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status closed">Recently closed</span></td>
+<td>The state used an Advisory Committee application window early in implementation; no public competitive subgrant dates were posted after that.</td>
+<td>Early 2026</td>
+<td>Advisory applications closed Feb. 16, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://hcpf.colorado.gov/rural-health-transformation-program">Colorado RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Connecticut" data-status="Monitor" data-updated="true">
+<td><strong>Connecticut</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>DSS says potential funding opportunities will be posted on the webpage and procurement portal, but no dated public opportunity is posted now.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://portal.ct.gov/dss/rural-health-transformation-program">Connecticut RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Delaware" data-status="Active" data-updated="true">
+<td><strong>Delaware</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>Multiple RHTP RFPs are live; example current package funds a rural healthcare workforce pipeline across Kent and Sussex Counties.</td>
+<td>Public notice Mar. 25, 2026</td>
+<td>Proposals due May 13, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://dhss.delaware.gov/dph/rural-health-transformation-program/">Delaware RHTP page</a><a href="https://bidcondocs.delaware.gov/HSS/HSS26075-CPPCLINSUPP_rfp.pdf">Delaware RFP</a><a href="https://mmp.delaware.gov/Bids/">Delaware procurement portal</a><a href="https://news.delaware.gov/2026/02/09/state-of-delaware-opens-initial-rfps-to-transform-rural-health-care/">Delaware launch announcement</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Southeast" data-state="Florida" data-status="Forecasted" data-updated="true">
+<td><strong>Florida</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>AHCA lists vendor RFQs and applicant RFAs as coming soon and has posted webinar and implementation materials.</td>
+<td>Planning / webinar materials live</td>
+<td>RFQs / RFAs coming soon</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://ahca.myflorida.com/rural-health-transformation-program">Florida RHTP page</a></div></td>
+</tr>
+<tr class="" data-region="Southeast" data-state="Georgia" data-status="Monitor" data-updated="false">
+<td><strong>Georgia</strong></td>
+<td>Southeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Final CMS approval is posted, but no public procurement or grant dates were found on the official state page.</td>
+<td>Final approval Feb. 26, 2026</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://dch.georgia.gov/great-health-program-georgias-rural-health-transformation-program">Georgia GREAT Health page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Hawaii" data-status="Monitor" data-updated="true">
+<td><strong>Hawaii</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>State plan and engagement page are public, but no public competitive funding dates were found on official sources reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://engage.hawaii.gov/rhtp/">Hawaii engagement page</a></div></td>
+</tr>
+<tr class="" data-region="West" data-state="Idaho" data-status="Forecasted" data-updated="false">
+<td><strong>Idaho</strong></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Official milestone schedule points to RFPs and competitive subgrants beginning in Q2 2026.</td>
+<td>April-June 2026 window</td>
+<td>Contracts / subgrants Jul.-Sep. 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/about-rural-health-transformation-program-grant">Idaho RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Illinois" data-status="Monitor" data-updated="true">
+<td><strong>Illinois</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Illinois program page and award announcement are public, but no current solicitation dates were found on official pages reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://hfs.illinois.gov/info/fedresctr/ruralhealthtp.html">Illinois RHTP page</a></div></td>
+</tr>
+<tr class="" data-region="Northeast" data-state="Indiana" data-status="Active" data-updated="false">
+<td><strong>Indiana</strong></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>GROW Regional Grants timeline is public with a live regional grant cycle.</td>
+<td>RFA released Mar. 2026</td>
+<td>LOIs due May 15; applications due Jul. 1, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.in.gov/grow-rural-health/regional-grants/">Indiana GROW Regional Grants</a><a href="https://www.in.gov/grow-rural-health/files/Request-for-Funding-Growing-Rural-Opportunities-for-Well-being-GROW-Regional-Grants-Program.pdf">Indiana request for funding</a><a href="https://www.in.gov/idoa/procurement/">Indiana procurement portal</a></div></td>
+</tr>
+<tr class="" data-region="Northeast" data-state="Iowa" data-status="Active" data-updated="false">
+<td><strong>Iowa</strong></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>IowaGrants continues to show live CMS-RHT-26-001 opportunity packages under Healthy Hometowns.</td>
+<td>RFPs released Mar. 2026</td>
+<td>Example package due early Apr. 2026; portal remains active</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.iowagrants.gov/">IowaGrants portal</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Kansas" data-status="Recently closed" data-updated="true">
+<td><strong>Kansas</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status closed">Recently closed</span></td>
+<td>First two RHTP grant rounds have closed, while the Evidence-Based Practice program has moved into implementation and infrastructure payment activity.</td>
+<td>Grants opened Feb. 24, 2026</td>
+<td>RPGP Apr. 3, 2026; REH/CAP Mar. 20, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.kdhe.ks.gov/2361/Rural-Health-Transformation-Program">Kansas RHTP page</a><a href="https://www.kdhe.ks.gov/m/newsflash/Home/Detail/1870">Kansas grant announcement</a><a href="https://supplier.sok.ks.gov/psc/sokfsprdsup/SUPPLIER/ERP/c/NUI_FRAMEWORK.PT_LANDINGPAGE.GBL?&amp;">Kansas procurement portal</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Mid-Atlantic" data-state="Kentucky" data-status="Active" data-updated="true">
+<td><strong>Kentucky</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Mid-Atlantic</td>
+<td><span class="status active">Active</span></td>
+<td>Kentucky has a current rolling RFA for Public Health Dental Hygiene Teams, including teledentistry, equipment, and data tools.</td>
+<td>RFA released Mar. 20, 2026</td>
+<td>Apr. 24, 2026 for Year 1 funding consideration</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://ruralhealthplan.ky.gov/Pages/index.aspx">Team Kentucky funding page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Southeast" data-state="Louisiana" data-status="Monitor" data-updated="true">
+<td><strong>Louisiana</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Louisiana has formal program pages and a new Office of Rural Health Transformation, but no public 2026 competitive dates were posted.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, secure connectivity/cyber, mobile/community care tech, AI/training environments</td>
+<td><div class="key-links"><a href="https://ldh.la.gov/page/rural-health-transformation-program">Louisiana RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Maine" data-status="Forecasted" data-updated="true">
+<td><strong>Maine</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Maine held an RHT informational webinar in March and is advancing implementation, but no public application deadline is posted yet.</td>
+<td>Informational webinar Mar. 19, 2026</td>
+<td>Next funding release TBD</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://www.maine.gov/dhhs/ruralhealth">Maine rural health page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Mid-Atlantic" data-state="Maryland" data-status="Monitor" data-updated="true">
+<td><strong>Maryland</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Mid-Atlantic</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Maryland continues stakeholder and telehealth work under the program, but no public competitive dates were found on official pages reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://health.maryland.gov/pophealth/Pages/Rural-Health-Transformation-Program.aspx">Maryland RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Massachusetts" data-status="Monitor" data-updated="true">
+<td><strong>Massachusetts</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Official RHTP materials are live, but no dated procurement or grant opportunities were found on official pages reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.mass.gov/info-details/about-the-rural-health-transformation-program">Massachusetts RHTP page</a><a href="https://www.mass.gov/rural-health-transformation-program">Massachusetts RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Michigan" data-status="Monitor" data-updated="true">
+<td><strong>Michigan</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>State program page is live and advisory activity launched in January, but no public competitive funding dates were found.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.michigan.gov/mdhhs/assistance-programs/medicaid/rural-health-transformation-program">Michigan RHTP page</a></div></td>
+</tr>
+<tr class="" data-region="Northeast" data-state="Minnesota" data-status="Active" data-updated="false">
+<td><strong>Minnesota</strong></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>Minnesota has live RHTP funding activity, including the Health Information Technology Advisory Services RFP.</td>
+<td>RFP live as of Apr. 2026</td>
+<td>HIT Advisory Services proposals due Apr. 20, 2026</td>
+<td>telehealth/virtual care, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://www.health.state.mn.us/facilities/ruralhealth/ruraltrans/grants.html">Minnesota grants page</a><a href="https://www.health.state.mn.us/facilities/ruralhealth/ruraltrans/docs/hitrfp.pdf">Minnesota HIT advisory RFP</a><a href="https://guest.supplier.systems.state.mn.us/psc/fmssupap/SUPPLIER/ERP/c/NUI_FRAMEWORK.PT_LANDINGPAGE.GBL?&amp;">Minnesota supplier portal</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Southeast" data-state="Mississippi" data-status="Monitor" data-updated="true">
+<td><strong>Mississippi</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Mississippi has a state RHT grant page and pre-award guidance, but no dated public solicitation was found on official sources reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://medicaid.ms.gov/rural-health-transformation-program/">Mississippi Medicaid RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Missouri" data-status="Forecasted" data-updated="true">
+<td><strong>Missouri</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>State webinar and planning materials told organizations to prepare for upcoming NOFOs, but no dated public opportunity is posted now.</td>
+<td>Planning webinar Dec. 30, 2025</td>
+<td>Next NOFO / RFP TBD</td>
+<td>RPM workflows, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://mydss.mo.gov/mhd/rural-health">Missouri rural health page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Montana" data-status="Active" data-updated="true">
+<td><strong>Montana</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status active">Active</span></td>
+<td>Montana is now accepting proposals for two Center of Excellence RFP components and says additional RFPs and grants are coming.</td>
+<td>Apr. 2, 2026</td>
+<td>Package-specific; more funding opportunities rolling out</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://dphhs.mt.gov/RuralHealthTransformationProgram/">Montana RHTP page</a><a href="https://dphhs.mt.gov/news/2026/April/DPHHS-Now-Accepting-Proposals-RHTP-CoE">Montana DPHHS announcement</a><a href="https://dphhs.mt.gov/RuralHealthTransformationProgram/RHTP-RFPs">Montana RHTP RFPs</a><a href="https://spb.mt.gov/eMACS-Resources">Montana procurement portal</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Nebraska" data-status="Active" data-updated="true">
+<td><strong>Nebraska</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>Nebraska has multiple live RHTP RFAs, including CHW training, food-as-medicine, RPM, and workforce sustainability tracks.</td>
+<td>Mar.-Apr. 2026</td>
+<td>Examples: Apr. 10, Apr. 22, Apr. 24, May 1, and Jun. 1, 2026</td>
+<td>RPM workflows, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://dhhs.ne.gov/Pages/Rural-Health-Transformation.aspx">Nebraska RHTP page</a><a href="https://dhhs.ne.gov/Pages/Grant-Opportunities.aspx">Nebraska grant opportunities</a><a href="https://dhhs.ne.gov/Grants%20and%20Contract%20Opportunity%20Docs/RHTP%20Initiative%204.4b%20RFA.pdf">Nebraska RPM RFA</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Nevada" data-status="Active" data-updated="true">
+<td><strong>Nevada</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status active">Active</span></td>
+<td>Nevada has two live RHTP funding rounds: Flex Fund and Rural Tribal Health Transformation.</td>
+<td>Flex Fund Mar. 23, 2026; Tribal round Apr. 2, 2026</td>
+<td>Apr. 30 and May 29, 2026</td>
+<td>secure connectivity/cyber, provider collaboration spaces, mobile/community care tech, AI/training environments</td>
+<td><div class="key-links"><a href="https://www.medicaid.nv.gov/providers/newsannounce/default">Nevada Medicaid announcements</a><a href="https://www.medicaid.nv.gov/Downloads/provider/web_announcement_3873_20260323.pdf">Nevada Flex Fund RFA</a><a href="https://www.medicaid.nv.gov/Downloads/provider/web_announcement_3883_20260402.pdf">Nevada Tribal funding RFA</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="New Hampshire" data-status="Monitor" data-updated="true">
+<td><strong>New Hampshire</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Program governance is underway under GO-NORTH, but no dated public funding or procurement window was found.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://www.dhhs.nh.gov/programs-services/medicaid/rural-health-transformation-program">New Hampshire RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="New Jersey" data-status="Active" data-updated="true">
+<td><strong>New Jersey</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>Official grant notices include a live Rural Health Transformation Program Community Health Workers in Rural New Jersey opportunity.</td>
+<td>Posted spring 2026</td>
+<td>Apr. 15, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://healthapps.nj.gov/noticeofgrant/noticegrants.aspx">New Jersey grants directory</a><a href="https://healthapps.nj.gov/noticeofgrant/documents/DOHP26RHT_rfa.pdf">NJ statewide RHT RFA</a><a href="https://healthapps.nj.gov/noticeofgrant/documents/OHCF26RHC.pdf">NJ rural hospital capacity NOFA</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="New Mexico" data-status="Forecasted" data-updated="true">
+<td><strong>New Mexico</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Official planning materials say the state is finalizing implementation milestones and procurement timelines and developing RFPs.</td>
+<td>Implementation planning underway</td>
+<td>RFP timing TBD</td>
+<td>telehealth/virtual care, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://www.hca.nm.gov/rural-health-transformation-program/">New Mexico RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="New York" data-status="Monitor" data-updated="true">
+<td><strong>New York</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>New York has public RHTP materials and stakeholder updates, but no current public competitive dates were found on official sources reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://health.ny.gov/facilities/transforming_rural_healthcare/">New York RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Southeast" data-state="North Carolina" data-status="Recently closed" data-updated="true">
+<td><strong>North Carolina</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status closed">Recently closed</span></td>
+<td>NC ROOTS Hub Lead applications closed after a clearly dated public RFA cycle.</td>
+<td>RFA released Feb. 26, 2026</td>
+<td>Applications due Apr. 2, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.ncdhhs.gov/divisions/office-rural-health/rural-health-transformation-program/rural-health-transformation-program-grant-opportunities">North Carolina grant opportunities</a><a href="https://www.ncdhhs.gov/ncrhtp-presentation-feb-26-webinar/download?attachment=">North Carolina webinar timeline</a><a href="https://www.ncdhhs.gov/rfa-2026-nc-rural-organizations-orchestrating-transformation-sustainability/download?attachment=">North Carolina RFA document</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="North Dakota" data-status="Active" data-updated="true">
+<td><strong>North Dakota</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>North Dakota posted its first RHTP funding opportunity for workforce retention grants supporting critical access hospitals and clinics.</td>
+<td>Mar. 18, 2026</td>
+<td>Apr. 30, 2026 at 5 p.m. CT</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.hhs.nd.gov/rural-health-transformation/funding">North Dakota funding page</a><a href="https://www.hhs.nd.gov/rural-health-transformation/funding/workforce">North Dakota workforce funding</a><a href="https://www.bidnetdirect.com/north-dakota">North Dakota procurement portal</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Ohio" data-status="Active" data-updated="true">
+<td><strong>Ohio</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>Ohio maintains a live searchable repository of Rural Health Transformation solicitations and reference documents for bidders.</td>
+<td>Solicitation repository live</td>
+<td>Package-specific; see solicitation invitations</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://odh.ohio.gov/know-our-programs/rural-health-transformation-program/solicitation-invitations/solicitation-invitations">Ohio solicitation repository</a></div></td>
+</tr>
+<tr class="" data-region="West" data-state="Oklahoma" data-status="Active" data-updated="false">
+<td><strong>Oklahoma</strong></td>
+<td>West</td>
+<td><span class="status active">Active</span></td>
+<td>Community-Led Wellness Hubs Microgrants NOFO is live under Oklahoma RHTP.</td>
+<td>Mar. 16, 2026</td>
+<td>Apr. 13, 2026 at 11:59 p.m. CT</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://oklahoma.gov/health/rhtp/rhtp-funding.html">Oklahoma RHTP funding page</a><a href="https://oklahoma.gov/health/news---events/newsroom/2026/oklahoma-rural-health-transformation-program-announces-public-gr.html">Oklahoma RHTP NOFO</a><a href="https://www.ok.gov/dcs/solicit/app/contractSearch.php">Oklahoma procurement portal</a></div></td>
+</tr>
+<tr class="" data-region="West" data-state="Oregon" data-status="Forecasted" data-updated="false">
+<td><strong>Oregon</strong></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Oregon continues planning Catalyst Awards and said RFGP applications would be managed through OregonBuys, with an early-spring target.</td>
+<td>Target: early Apr. 2026</td>
+<td>RFGP timing / eligibility still being finalized</td>
+<td>telehealth/virtual care, RPM workflows, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://www.oregon.gov/oha/hpa/hp/pages/rural-health-transformation.aspx">Oregon RHTP page</a><a href="https://www.oregon.gov/oha/HPA/HP/Documents/2026.03.25%20-%20PDF%20-%20RHTP%20Webinar%20-%20Website%20Version.pdf">Oregon webinar deck</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Pennsylvania" data-status="Forecasted" data-updated="true">
+<td><strong>Pennsylvania</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Pennsylvania has public RHTP webinars and funding-framework materials, but no public application deadline was posted on official pages reviewed.</td>
+<td>Framework / webinars Mar. 2026</td>
+<td>Next public opportunity TBD</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://www.pa.gov/agencies/dhs/programs-services/healthcare/rural-health/rural-health-transformation-plan">Pennsylvania RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Rhode Island" data-status="Monitor" data-updated="true">
+<td><strong>Rhode Island</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Rhode Island has an official program page, but no dated public procurement or grant window was found on official sources reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>telehealth/virtual care, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://health.ri.gov/healthcare/rural-health-transformation-program">Rhode Island RHTP page</a><a href="https://eohhs.ri.gov/initiatives/rural-health-transformation-program">Rhode Island RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Southeast" data-state="South Carolina" data-status="Active" data-updated="true">
+<td><strong>South Carolina</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Southeast</td>
+<td><span class="status active">Active</span></td>
+<td>South Carolina posted four live RHTP grant opportunities under Connections to Care, Wellness Within Reach, Leveling Up, and Shoring Up to Sustainability.</td>
+<td>Posted Apr. 2, 2026</td>
+<td>June 1, 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.scdhhs.gov/resources/grants">South Carolina grants page</a><a href="https://www.scdhhs.gov/communications/scdhhs-announces-rural-health-transformation-program-funding-opportunities">South Carolina grant announcement</a><a href="https://www.scdhhs.gov/sites/dhhs/files/%282026-04-02%29%20Leveling%20Up%20SCDHHS-26-002.pdf">South Carolina Leveling Up RFA</a><a href="https://www.scdhhs.gov/sites/dhhs/files/%282026-04-02%29%20FAQs%20RHTP%20.pdf">South Carolina RHTP FAQs</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="South Dakota" data-status="Active" data-updated="true">
+<td><strong>South Dakota</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status active">Active</span></td>
+<td>South Dakota has already launched at least two public RFP rounds tied to rural digital health modernization and coordinated care delivery.</td>
+<td>First round Feb. 25, 2026; second round Mar. 3, 2026</td>
+<td>Package-specific via Central Bid Exchange</td>
+<td>interoperability/EHR, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://doh.sd.gov/healthcare-professionals/rural-health/rural-health-transformation-project/">South Dakota RHT project</a><a href="https://postingboard.esmsolutions.com/3444a404-3818-494f-84c5-2a850acd7779/events">South Dakota posting board</a><a href="https://doh.sd.gov/healthcare-professionals/rural-health/rural-health-transformation-project/rht-resources-faqs/">South Dakota RHT FAQs</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Mid-Atlantic" data-state="Tennessee" data-status="Active" data-updated="true">
+<td><strong>Tennessee</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Mid-Atlantic</td>
+<td><span class="status active">Active</span></td>
+<td>Tennessee posted its first public RHTF procurement: an RFI for evaluation consulting.</td>
+<td>Apr. 2, 2026</td>
+<td>Apr. 17, 2026</td>
+<td>secure connectivity/cyber, provider collaboration spaces, mobile/community care tech, AI/training environments</td>
+<td><div class="key-links"><a href="https://www.tn.gov/health/rural.html">Tennessee RHTP page</a><a href="https://www.tn.gov/generalservices/procurement/central-procurement-office--cpo-/supplier-information/request-for-proposals--rfp--opportunities1.html">Tennessee procurement page</a><a href="https://www.tn.gov/health/funding-opportunities.html">Tennessee funding opportunities</a><a href="https://www.tn.gov/health/news/2026/3/26/tn-rural-health-transformation-program-info-session.html">Tennessee info session notice</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Texas" data-status="Forecasted" data-updated="true">
+<td><strong>Texas</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Texas public materials say HHSC intends to award RHTP funds through six initiatives plus external contracts, but no public application dates were posted.</td>
+<td>Implementation materials updated Feb. 2026</td>
+<td>Next procurement / grant release TBD</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://pfd.hhs.texas.gov/rural-health-transformation-program">Texas RHTP page</a><a href="https://resources.hhs.texas.gov/rfa">Texas RFA portal</a><a href="https://pfd.hhs.texas.gov/sites/default/files/documents/rural-hlth-prgm/rural-tx-strng-fact-sheet.pdf">Texas fact sheet</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Utah" data-status="Forecasted" data-updated="true">
+<td><strong>Utah</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Utah funding opportunities page is live and state webinar materials point to anticipated releases in the March-May 2026 window.</td>
+<td>Funding page live</td>
+<td>Additional opportunities anticipated by May 2026</td>
+<td>telehealth/virtual care, interoperability/EHR, secure connectivity/cyber, provider collaboration spaces</td>
+<td><div class="key-links"><a href="https://dhhs.utah.gov/ruralhealth/">Utah rural health page</a><a href="https://dhhs.utah.gov/ruralhealth/funding-opportunities/">Utah funding opportunities</a><a href="https://utah.bonfirehub.com/portal/?tab=openOpportunities">Utah procurement portal</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Vermont" data-status="Forecasted" data-updated="true">
+<td><strong>Vermont</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Vermont says its RHT vision will be executed through 30 grant opportunities plus multiple procurements, but public application dates are not yet posted.</td>
+<td>Implementation details posted Mar. 4, 2026</td>
+<td>Grant application periods / procurements TBD</td>
+<td>RPM workflows, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://taggs.hhs.gov/Detail/AwardDetail?arg_AwardNum=RHTCMS332047&amp;arg_ProgOfficeCode=190">Vermont TAGGS award page</a><a href="https://legislature.vermont.gov/Documents/2026/Workgroups/House%20Appropriations/Other%20Topics/W~Jill%20Mazza%20Olson~RHTP%20Program%20Application%20Activity%20Details~3-10-2026.pdf">Vermont implementation details</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Mid-Atlantic" data-state="Virginia" data-status="Forecasted" data-updated="true">
+<td><strong>Virginia</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Mid-Atlantic</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Virginia finished its assessment / technical assistance procurement and says CareIQ interoperability and provider-productivity RFPs are anticipated in July.</td>
+<td>Assessment work began Mar. 16, 2026</td>
+<td>Next RFPs anticipated Jul. 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://www.vhcf.org/rural-health/">Virginia rural health page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Washington" data-status="Monitor" data-updated="true">
+<td><strong>Washington</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status monitor">Monitor</span></td>
+<td>Washington has program and budget approval materials public, but no public competitive dates were posted on official pages reviewed.</td>
+<td>Program active</td>
+<td>TBD by state</td>
+<td>secure connectivity/cyber, provider collaboration spaces, mobile/community care tech, AI/training environments</td>
+<td><div class="key-links"><a href="https://www.hca.wa.gov/about-hca/programs-and-initiatives/value-based-purchasing/rural-health-transformation-program">Washington RHTP page</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Mid-Atlantic" data-state="West Virginia" data-status="Forecasted" data-updated="true">
+<td><strong>West Virginia</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Mid-Atlantic</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>West Virginia has launched the program site, advisory panel, and grant-opportunity routing, but no dated public deadline was visible on official pages reviewed.</td>
+<td>Program page / webinar resources live</td>
+<td>Grant timing TBD</td>
+<td>telehealth/virtual care, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://health.wv.gov/rural-health-transformation-program">West Virginia RHTP page</a><a href="https://prd311.wvoasis.gov/PRDVSS1X1ERP/Advantage4">West Virginia vendor portal</a><a href="https://health.wv.gov/news">West Virginia RHTP news</a></div></td>
+</tr>
+<tr class="updated-row" data-region="Northeast" data-state="Wisconsin" data-status="Forecasted" data-updated="true">
+<td><strong>Wisconsin</strong><div class="update-pill">Updated this refresh</div></td>
+<td>Northeast</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Wisconsin says RHTP funds will support grants for workforce, digital infrastructure, and coordinated systems of care, but public dates were not posted.</td>
+<td>Program page updated Mar. 2, 2026</td>
+<td>Grant timing TBD</td>
+<td>RPM workflows, secure connectivity/cyber, provider collaboration spaces, mobile/community care tech</td>
+<td><div class="key-links"><a href="https://www.dhs.wisconsin.gov/business/rhtp.htm">Wisconsin RHTP page</a><a href="https://www.dhs.wisconsin.gov/business/solicitations-list.htm">Wisconsin solicitations list</a><a href="https://worh.org/">Wisconsin SORH</a></div></td>
+</tr>
+<tr class="updated-row" data-region="West" data-state="Wyoming" data-status="Forecasted" data-updated="true">
+<td><strong>Wyoming</strong><div class="update-pill">Updated this refresh</div></td>
+<td>West</td>
+<td><span class="status forecast">Forecasted</span></td>
+<td>Wyoming’s official timeline places RFA/RFP postings in the March-April 2026 window, followed by awards in May-June.</td>
+<td>March-April 2026 posting window</td>
+<td>Awards expected May-June 2026</td>
+<td>telehealth/virtual care, RPM workflows, interoperability/EHR, secure connectivity/cyber</td>
+<td><div class="key-links"><a href="https://health.wyo.gov/admin/rural-health-transformation-program/">Wyoming RHTP page</a></div></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="eventsSection">
+<h2>Conferences, Events &amp; Webinars</h2>
+<p>This section captures public RHTP-related webinars, stakeholder sessions, and event-style notices that help reps engage early.</p>
+</div>
+<div class="subcontrols" id="eventsControls">
+<label>Event type
+    <select id="eventTypeFilter" onchange="applyEventFilters()">
+<option value="">All event types</option>
+</select>
+</label>
+<label class="check compact-check">
+<input id="hidePastEvents" onchange="applyEventFilters()" type="checkbox"/>
+    Hide past dates
+  </label>
+<button class="btn" onclick="resetEventFilters()" type="button">Reset events</button>
+<span class="subcontrols-note" id="eventCount">Showing -- events</span>
+</div>
+<table id="eventsTable">
+<thead>
+<tr>
+<th class="sortable" data-indicator="↕" id="eventStateHeader" onclick="sortEventRows('state')" style="width:10%">State</th>
+<th style="width:10%">Event type</th>
+<th style="width:18%">Event</th>
+<th class="sortable" data-indicator="▲" id="eventDateHeader" onclick="sortEventRows('date')" style="width:16%">Date / time</th>
+<th style="width:11%">Place</th>
+<th style="width:12%">Location</th>
+<th style="width:13%">Description</th>
+<th style="width:10%">Link</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+<div class="section" id="resourcesSection">
+<h2>Official Resources</h2>
+<p>Include these official resources in weekly RHTP research, partner discovery, and event searches.</p>
+</div>
+<table id="resourcesTable">
+<thead>
+<tr>
+<th style="width:28%">Resource</th>
+<th style="width:24%">Coverage</th>
+<th style="width:28%">Why it matters</th>
+<th style="width:20%">Link</th>
+</tr>
+</thead>
+<tbody><tr><td><strong>National Consortium of Telehealth Resource Centers (TRCs) – Centers Directory</strong></td><td>Regional and national telehealth assistance centers covering all states</td><td>Use this official directory to identify the correct regional TRC, national policy support, and national technology support for each state.</td><td><a href="https://telehealthresourcecenter.org/centers/">TRC Centers directory</a></td></tr><tr><td><strong>National Consortium of Telehealth Resource Centers (TRCs) – Events</strong></td><td>National and multi-state telehealth events and webinar listings</td><td>Use this official events page in weekly searches for telehealth conferences, webinars, and early-engagement opportunities relevant to RHTP and digital-health planning.</td><td><a href="https://telehealthresourcecenter.org/events/">TRC Events page</a></td></tr><tr><td><strong>National Rural Health Association – RHTP</strong></td><td>National rural health transformation resources and redesign support</td><td>Use this page for national framing, policy context, and innovation-system-redesign guidance relevant to rural transformation work.</td><td><a href="https://www.ruralhealth.us/programs/center-for-rural-health-innovation-and-system-redesign/rural-health-transformation-program">NRHA RHTP page</a></td></tr><tr><td><strong>CMS – Rural Health Transformation Program Overview</strong></td><td>Federal program overview and official CMS program guidance</td><td>Use this official CMS page for core program structure, federal framing, and source validation.</td><td><a href="https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview">CMS RHT overview</a></td></tr><tr><td><strong>NASHP – RHTP State Focus on Primary Care</strong></td><td>State policy analysis and primary-care transformation context</td><td>Use for comparative state perspective and primary-care positioning around RHTP.</td><td><a href="https://nashp.org/rural-health-transformation-program-state-focus-on-primary-care/">NASHP state focus</a></td></tr><tr><td><strong>NOSORH – Rural Health Transformation</strong></td><td>State rural health office perspective and related resources</td><td>Use for state-office alignment and rural health office partner context.</td><td><a href="https://nosorh.org/rural-health-transformation/">NOSORH RHT page</a></td></tr><tr><td><strong>Rural Health Information Hub – RHTP Resources</strong></td><td>National curated resource list for RHTP</td><td>Use as a fast discovery source for state materials, background, and related transformation references.</td><td><a href="https://www.ruralhealthinfo.org/resources/lists/rhtp">RHIhub RHTP resources</a></td></tr><tr><td><strong>The Rural Center – Resources</strong></td><td>Rural systems, workforce, broadband, and community development resources</td><td>Use for broader rural ecosystem context that can support Solutionz positioning.</td><td><a href="https://www.ruralcenter.org/resources">The Rural Center resources</a></td></tr></tbody>
+</table>
+<div class="section">
+<h2>Refresh summary</h2>
+</div>
+<div class="callouts">
+<div class="card">
+<h3>Active now (15)</h3>
+<p>Priority current windows include Delaware, Indiana, Iowa, Kentucky, Minnesota, Montana, Nebraska, Nevada, New Jersey, North Dakota, Ohio, Oklahoma, South Carolina, South Dakota, and Tennessee.</p>
+</div>
+<div class="card">
+<h3>Next-wave states (15)</h3>
+<p>Arizona, Florida, Idaho, Maine, Missouri, New Mexico, Oregon, Pennsylvania, Texas, Utah, Vermont, Virginia, West Virginia, Wisconsin, and Wyoming all have official rollout signals but not enough posted public dates to call fully open statewide.</p>
+</div>
+<div class="card">
+<h3>Recently closed (4)</h3>
+<p>Alaska, Colorado, Kansas, and North Carolina had recent dated windows that are still useful for partner mapping and for watching the next release.</p>
+</div>
+<div class="card">
+<h3>Monitor states (16)</h3>
+<p>16 states remain strategically relevant but lacked a public dated competitive window on official sources reviewed. Keep these on weekly scan for procurement, webinar, or RFA movement.</p>
+</div>
+</div>
+<div class="footer">
+      Produced by the Grant Program Services (GPS) Team. Contact <a href="mailto:solutionzgps@solutionzinc.com">solutionzgps@solutionzinc.com</a> for grant support.
     </div>
-    <div class="meta"><div><strong>Last verified:</strong> April 7, 2026</div><div><strong>States included:</strong> 50</div><div><strong>Master type:</strong> Interactive HTML working file</div><div><strong>Regions used:</strong> Mid-Atlantic, Northeast, Southeast, West</div></div>
-    <div class="export-note">Use <strong>Export PDF</strong> to open the browser print dialog, then choose <strong>Save as PDF</strong>. Browser-generated PDFs usually preserve clickable links.</div>
-    <div class="keyword-panel"><h3>Keyword scan legend</h3><p>These keywords are color-coded in the tracker and event descriptions so new notices are easier to spot quickly, including plural forms like RFPs and Grants.</p><div class="keyword-chips"><span class="keyword-chip kw-proc">RFA</span><span class="keyword-chip kw-proc">RFP</span><span class="keyword-chip kw-proc">RFQ</span><span class="keyword-chip kw-proc">Solicitation</span><span class="keyword-chip kw-proc">GFO</span><span class="keyword-chip kw-fund">NOFO</span><span class="keyword-chip kw-fund">NOFA</span><span class="keyword-chip kw-fund">FOA</span><span class="keyword-chip kw-fund">Grant</span><span class="keyword-chip kw-intent">LOI</span><span class="keyword-chip kw-intent">ROI</span><span class="keyword-chip kw-intent">NOI</span><span class="keyword-chip kw-intent">Letter of Intent</span><span class="keyword-chip kw-intent">Notice of Interest</span><span class="keyword-chip kw-event">Webinar</span><span class="keyword-chip kw-event">Event</span><span class="keyword-chip kw-event">Conference</span><span class="keyword-chip kw-award">Award</span></div></div>
-    <div class="section" id="trackerSection"><h2>How to use this tracker</h2><p>Click the State, Region, or Status column header to sort. “Active” means a live application or package-level RFA/RFP is open now. “Recently closed” means a recent cycle just ended but is still useful for partner mapping. “Forecasted” means an official state source has announced an upcoming window or release period. “Monitor” means the state is strategically relevant, but no public competitive dates were found on official RHTP pages as of the verification date.</p></div>
-    <div class="toolrow" id="stateFilters"><button type="button" onclick="showAllStatuses()">All statuses</button><button id="status-active-btn" type="button" onclick="toggleStatusFilter('active')">Active</button><button id="status-recently-closed-btn" type="button" onclick="toggleStatusFilter('recently closed')">Recently closed</button><button id="status-forecasted-btn" type="button" onclick="toggleStatusFilter('forecasted')">Forecasted</button><button id="status-monitor-btn" type="button" onclick="toggleStatusFilter('monitor')">Monitor</button><button type="button" onclick="showAllRegions()">All regions</button><button id="region-mid-atlantic-btn" type="button" onclick="toggleRegionFilter('Mid-Atlantic')">Mid-Atlantic</button><button id="region-northeast-btn" type="button" onclick="toggleRegionFilter('Northeast')">Northeast</button><button id="region-southeast-btn" type="button" onclick="toggleRegionFilter('Southeast')">Southeast</button><button id="region-west-btn" type="button" onclick="toggleRegionFilter('West')">West</button><button id="toggleLinksBtn" type="button" onclick="toggleLinksCol()">Hide links</button><button id="toggleResourcesBtn" type="button" onclick="toggleResources()">Hide resources</button><button id="toggleEventsBtn" type="button" onclick="toggleEventsList()">Hide events list</button><span id="filterCounts">Visible states: --</span><span id="eventCounts">Visible events: --</span></div>
-    <div class="toolrow"><label>Sales rep email <input id="emailTo" type="email" placeholder="rep@company.com"></label><label>State <select id="stateEmailSelect"><option value="">Select state…</option></select></label><button type="button" onclick="emailSelectedState()">Email selected state</button><button type="button" onclick="emailFilteredReport()">Email filtered report</button><button type="button" onclick="emailFullReport()">Email full report</button></div>
-    <table id="trackerTable"><thead><tr><th id="stateHeader" class="sortable" data-indicator="▲" onclick="sortRows('state')" style="width:9%">State</th><th id="regionHeader" class="sortable" data-indicator="↕" onclick="sortRows('region')" style="width:9%">Region</th><th id="statusHeader" class="sortable" data-indicator="↕" onclick="sortRows('status')" style="width:9%">Status</th><th style="width:16%">Current signal</th><th style="width:12%">Open / posted</th><th style="width:13%">Close / next date</th><th style="width:14%">Solutionz fit</th><th style="width:18%">Links</th></tr></thead><tbody></tbody></table>
-    <div class="section" id="eventsSection"><h2>Conferences, Events &amp; Webinars</h2><p>This section captures public RHTP-related webinars, stakeholder sessions, and event-style notices that help reps engage early.</p></div>
-    <div id="eventsTools" class="toolrow"><button id="togglePastBtn" type="button" onclick="togglePastEvents()">Hide past dates</button><label>Event Type <select id="eventTypeFilter" onchange="setEventTypeFilter(this.value)"><option value="">All event types</option></select></label><span>Click State or Date / Time to sort the event list.</span><span>Past dates are compared against April 7, 2026.</span></div>
-    <table id="eventsTable"><thead><tr><th id="eventStateHeader" class="sortable" data-indicator="↕" onclick="sortEventRows('state')" style="width:10%">State</th><th style="width:10%">Event Type</th><th style="width:15%">Event</th><th id="eventDateHeader" class="sortable" data-indicator="▲" onclick="sortEventRows('date')" style="width:16%">Date / Time</th><th style="width:13%">Place</th><th style="width:13%">Location</th><th style="width:11%">Description</th><th style="width:12%">Link</th></tr></thead><tbody></tbody></table>
-    <div class="section" id="resourcesSection"><h2>Official Resources</h2><p>Include these official resources in weekly RHTP research, partner discovery, and event searches.</p></div>
-    <table id="resourcesTable"><thead><tr><th style="width:28%">Resource</th><th style="width:24%">Coverage</th><th style="width:28%">Why it matters</th><th style="width:20%">Link</th></tr></thead><tbody></tbody></table>
-    <div class="section"><h2>Weekly refresh guidance</h2></div>
-    <div class="callouts"><div class="card"><h3>Working master</h3><p>Use this file for weekly research refreshes, sorting, filters, and event tracking. Publish a separate static SharePoint-safe snapshot after each update cycle.</p></div><div class="card"><h3>Search notes</h3><p>This rebuild focuses on stability first so the tables always render.</p></div><div class="card"><h3>Events &amp; webinars</h3><p>Review this section weekly for official state webinars, TRC events, and early-engagement sessions that help sales reps engage before procurements open.</p></div><div class="card"><h3>Sales message</h3><p>Lead with telehealth environments, secure connectivity, interoperability, provider collaboration spaces, RPM-ready workflows, digital access points, and cybersecurity lifecycle support.</p></div></div>
-    <div id="devCheck" class="dev-check"><strong>Self-check:</strong> running…</div>
-    <div class="footer">Produced by the Grant Program Services (GPS) Team. Contact <a href="mailto:solutionzgps@solutionzinc.com">solutionzgps@solutionzinc.com</a> for grant support.</div>
-  </div>
-  <script>
-    const TODAY = new Date('2026-04-07T00:00:00');
-    const stateData = [
-      {state:'Alabama',region:'Southeast',status:'monitor',updated:true,signal:'Official ARHTP page is live and Alabama received first-year funding, but no public RFA, RFP, NOFO, or GFO is posted yet.',open:'ARHTP page active; first advisory meeting Feb. 4, 2026',close:'TBD by state',fit:'Telehealth, teleconsulting, remote monitoring, rural specialty access, EMS, and infrastructure modernization.',links:[['Alabama ARHTP page','https://adeca.alabama.gov/alruralhealth/']]},
-      {state:'Alaska',region:'West',status:'recently closed',updated:false,signal:'First LOI registration period completed; future rounds expected.',open:'Feb. 17, 2026',close:'Mar. 11, 2026',fit:'Telehealth, RPM, digital access tools, remote-care infrastructure, provider connectivity.',links:[['Alaska RHTP page','https://health.alaska.gov/en/education/rural-health-transformation-program/']]},
-      {state:'Arizona',region:'West',status:'monitor',updated:true,signal:'Official AHCCCS RHTP page is live and says Arizona is investing federal funding, but no public RFA, RFP, or GFO is posted yet.',open:'Program runs Dec. 2025-Oct. 2030',close:'TBD by state',fit:'Telehealth hubs, mobile and satellite care, workforce growth, digital modernization, and rural provider support.',links:[['Arizona RHTP page','https://www.azahcccs.gov/AHCCCS/Initiatives/RHTP/']]},
-      {state:'Arkansas',region:'Southeast',status:'monitor',updated:true,signal:'Official application and FY26 award are posted, but no public RFA, RFP, NOFO, or GFO is live yet.',open:'Application and proposal portal posted in late 2025',close:'TBD by state',fit:'Telehealth, digital access, rural care redesign, provider collaboration, and cybersecurity positioning.',links:[['Arkansas RHTP application page','https://governor.arkansas.gov/arkansas-rural-health-transformation-program-application/']]},
-      {state:'California',region:'West',status:'monitor',updated:true,signal:'Program page is live; Spring 2026 webinar registration is posted, but no public competitive dates were posted on the official page.',open:'Program active',close:'Spring 2026 webinar: Apr. 21, 2026',fit:'Telehealth, rural tech modernization, interoperability, digital workflows, care-network buildout.',links:[['California RHTP page','https://hcai.ca.gov/workforce/health-workforce/california-state-office-of-rural-health/']]},
-      {state:'Colorado',region:'West',status:'monitor',updated:true,signal:'Official program page is live and shows a first-year award, but no public RFA, RFP, or GFO is posted yet.',open:'Program page active',close:'TBD by state',fit:'Behavioral health integration, rural access, hospital sustainability, and workforce support.',links:[['Colorado RHTP page','https://hcpf.colorado.gov/rural-health-transformation-program']]},
-      {state:'Connecticut',region:'Northeast',status:'monitor',updated:true,signal:'Official DSS program page is live and a first-year award was announced, but no public solicitation is posted yet.',open:'Award announced Mar. 5, 2026',close:'TBD by state',fit:'Workforce gaps, innovative care delivery, sustainable rural access points, and provider support.',links:[['Connecticut RHTP page','https://portal.ct.gov/dss/rural-health-transformation-program']]},
-      {state:'Delaware',region:'Northeast',status:'active',updated:false,signal:'Initial RFPs opened statewide and Delaware continues routing opportunity access through its program and state procurement channels.',open:'Feb. 9, 2026',close:'Package-specific; example live package due Apr. 29, 2026',fit:'Telehealth, RPM, health IT infrastructure, rural access points, workflow modernization.',links:[['Delaware RHTP page','https://dhss.delaware.gov/dph/rural-health-transformation-program/'],['Delaware procurement portal','https://mmp.delaware.gov/Bids/'],['Delaware launch announcement','https://news.delaware.gov/2026/02/09/state-of-delaware-opens-initial-rfps-to-transform-rural-health-care/']]},
-      {state:'Florida',region:'Southeast',status:'forecasted',updated:true,signal:'Official AHCA page lists vendor RFQs and applicant RFAs as coming soon.',open:'Feb. 18, 2026 webinar and FAQ posted',close:'RFA timing described as early 2026; vendor and applicant postings coming soon',fit:'Behavioral-health telehealth, tele-specialties, tele-ICU, telestroke, remote patient telemonitoring, diagnostic technology support, and HIE onboarding.',links:[['Florida RHTP page','https://ahca.myflorida.com/rural-health-transformation-program']]},
-      {state:'Georgia',region:'Southeast',status:'monitor',updated:true,signal:'Official GREAT Health page includes the amended budget and a January 15 information session, but no public RFA, RFP, or GFO is live yet.',open:'Value-Based Care Model information session Jan. 15, 2026',close:'TBD by state',fit:'Cybersecurity services, telehealth integration, EHR enhancement, rural technology investment fund, and rural value-based-care support.',links:[['Georgia GREAT Health page','https://dch.georgia.gov/great-health-program-georgias-rural-health-transformation-program']]},
-      {state:'Hawaii',region:'West',status:'monitor',updated:true,signal:'Official Hawaii plan page is live and shows a first-year award, but no public solicitation is posted yet.',open:'Award announced Dec. 29, 2025',close:'TBD by state',fit:'Neighbor-island access, care modernization, workforce support, and rural infrastructure.',links:[['Hawaii RHTP page','https://engage.hawaii.gov/rhtp/']]},
-      {state:'Idaho',region:'West',status:'forecasted',updated:false,signal:'Official milestone schedule says RFPs and competitive subgrants begin in Q2.',open:'April–June 2026',close:'Contracts/subgrants Jul.–Sep. 2026',fit:'Telehealth equipment, EHR upgrades, cybersecurity modernization, emergency communications, analytics.',links:[['Idaho RHTP page','https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/about-rural-health-transformation-program-grant']]},
-      {state:'Illinois',region:'Northeast',status:'monitor',updated:true,signal:'Official HFS RHTP page is live with application materials and award information, but no public solicitation is posted yet.',open:'Award announced Dec. 31, 2025',close:'TBD by state',fit:'Rural infrastructure, provider stability, access expansion, and technology-enabled care.',links:[['Illinois RHTP page','https://hfs.illinois.gov/info/fedresctr/ruralhealthtp.html']]},
-      {state:'Indiana',region:'Northeast',status:'active',updated:true,signal:'GROW Regional Grants are live with a published request for funding and regional application timeline.',open:'Applications opened Mar. 2026',close:'LOIs due May 15, 2026; applications due Jul. 1, 2026',fit:'Teleconsult systems, telehealth infrastructure, secure provider workflows, regional digital-care buildouts.',links:[['Indiana regional grants','https://www.in.gov/grow-rural-health/regional-grants/'],['Indiana request for funding','https://www.in.gov/grow-rural-health/files/Request-for-Funding-Growing-Rural-Opportunities-for-Well-being-GROW-Regional-Grants-Program.pdf'],['Indiana procurement portal','https://www.in.gov/idoa/procurement/']]},
-      {state:'Iowa',region:'Northeast',status:'active',updated:true,signal:'Multiple IowaGrants RFP packages are live under CMS-RHT-26-001.',open:'Example package issued Feb. 27, 2026',close:'Example package due Apr. 9, 2026 at noon',fit:'Medical equipment, telehealth, HIE, mobile care, maternal transport tech, hub-and-spoke support.',links:[['IowaGrants portal','https://www.iowagrants.gov/']]},
-      {state:'Kansas',region:'Northeast',status:'recently closed',updated:true,signal:'KDHE’s first two posted grant opportunities have now passed their initial deadlines, but the program page remains the best launch point for upcoming cycles and follow-on activity.',open:'Feb. 24, 2026 announcement',close:'RPGP closed Apr. 3, 2026; REH/CAP closed Mar. 20, 2026',fit:'RPM, telehealth navigation, data platforms, AI-enabled tools, facility modernization, capital upgrades.',links:[['Kansas RHTP page','https://www.kdhe.ks.gov/2361/Rural-Health-Transformation-Program'],['Kansas grant announcement','https://www.kdhe.ks.gov/m/newsflash/Home/Detail/1870'],['Kansas procurement portal','https://supplier.sok.ks.gov/psc/sokfsprdsup/SUPPLIER/ERP/c/NUI_FRAMEWORK.PT_LANDINGPAGE.GBL?&']]},
-      {state:'Kentucky',region:'Mid-Atlantic',status:'monitor',updated:true,signal:'Team Kentucky plan page is live with hub-and-spoke initiatives, telehealth-enabled maternity and crisis care, but no public solicitation is posted yet.',open:'Plan page active',close:'TBD by state',fit:'Digital self-management tools, telehealth-enabled teams, crisis care, and rural dental access.',links:[['Kentucky RHTP page','https://ruralhealthplan.ky.gov/Pages/index.aspx']]},
-      {state:'Louisiana',region:'Southeast',status:'monitor',updated:true,signal:'Official RHTP timeline shows CMS Year 1 funding in January 2026 and projected state notification of funding opportunities in January 2026, but no current public RFA or NOFO is posted on the main state page.',open:'CMS distribution of Year 1 funding: January 2026',close:'Funding opportunity timing delayed / TBD on current public page',fit:'Telehealth, workforce technology, emergency systems integration, rural hospital stabilization, and digital-health infrastructure.',links:[['Louisiana RHTP page','https://ldh.la.gov/page/rural-health-transformation-program']]},
-      {state:'Maine',region:'Northeast',status:'forecasted',updated:true,signal:'Official Maine pages and webinars said the anticipated timeline for funding opportunities and next steps for provider participation would be discussed.',open:'Informational webinars Mar. 26 and Mar. 31, 2026',close:'Funding opportunity timeline discussed; dates TBD',fit:'Technology and data integration, workforce support, provider participation, and statewide rural system upgrades.',links:[['Maine RHTP page','https://www.maine.gov/dhhs/ruralhealth']]},
-      {state:'Maryland',region:'Mid-Atlantic',status:'monitor',updated:true,signal:'Official Maryland RHTP page is live and shows a first-year award, but no public solicitation is posted yet.',open:'Page updated Feb. 13, 2026',close:'TBD by state',fit:'Rural workforce, sustainable access, innovative care models, and food-as-health initiatives.',links:[['Maryland RHTP page','https://health.maryland.gov/pophealth/Pages/Rural-Health-Transformation-Program.aspx']]},
-      {state:'Massachusetts',region:'Northeast',status:'monitor',updated:true,signal:'Official Massachusetts RHTP pages are live and the state announced a first-year award, but no public solicitation is posted yet.',open:'Award announced Jan. 2, 2026',close:'TBD by state',fit:'Access expansion, rural system strengthening, technology, and sustainability planning.',links:[['Massachusetts RHTP page','https://www.mass.gov/rural-health-transformation-program']]},
-      {state:'Michigan',region:'Northeast',status:'monitor',updated:true,signal:'Official MDHHS RHTP page is live and the state sought advisory council members in January, but no public solicitation is posted yet.',open:'Advisory council recruitment Jan. 13, 2026',close:'TBD by state',fit:'Rural provider sustainability, growth support, service access, and long-term transformation.',links:[['Michigan RHTP page','https://www.michigan.gov/mdhhs/assistance-programs/medicaid/rural-health-transformation-program']]},
-      {state:'Minnesota',region:'Northeast',status:'active',updated:true,signal:'Multiple NOFOs are live for provider entities and MDH also posted a Health Information Technology Advisory Services RFP.',open:'Program grants opened Mar. 18, 2026; HIT RFP posted Mar. 2026',close:'HIT RFP responses due Apr. 20, 2026; other grant deadlines run from late Apr. to mid-May 2026',fit:'Remote monitoring, telehealth-enabled rural care, infrastructure, provider collaboration, digital access.',links:[['Minnesota RHTP funding page','https://www.health.state.mn.us/facilities/ruralhealth/ruraltrans/grants.html'],['Minnesota HIT advisory RFP','https://www.health.state.mn.us/facilities/ruralhealth/ruraltrans/docs/hitrfp.pdf'],['Minnesota supplier portal','https://guest.supplier.systems.state.mn.us/psc/fmssupap/SUPPLIER/ERP/c/NUI_FRAMEWORK.PT_LANDINGPAGE.GBL?&']]},
-      {state:'Mississippi',region:'Southeast',status:'monitor',updated:true,signal:'Official Medicaid pages show a 2025 consultant RFQ and stakeholder forum process, but no fresh 2026 public RFA, RFP, NOFO, or GFO was found.',open:'Consultant quotes posted Jul. 29, 2025',close:'Consultant quote deadline was Aug. 4, 2025; no new 2026 public funding notice found',fit:'Telehealth, rural care planning, secure collaboration, and future infrastructure modernization positioning.',links:[['Mississippi RHTP page','https://medicaid.ms.gov/rural-health-transformation-program/']]},
-      {state:'Missouri',region:'Northeast',status:'monitor',updated:true,signal:'Official DSS RHTP page is live with program overview content, but no public solicitation is posted yet.',open:'Program page active',close:'TBD by state',fit:'Rural healthcare system redesign, community partnerships, workforce support, and sustainability.',links:[['Missouri RHTP page','https://mydss.mo.gov/mhd/rural-health']]},
-      {state:'Montana',region:'West',status:'active',updated:true,signal:'Montana now has live RHTP Requests for Proposals posted and says additional funding opportunities will be issued over the coming months.',open:'RFPs posted Apr. 2026; vendor fair held Mar. 11, 2026',close:'See individual RFPs on the Montana RHTP RFPs page',fit:'Telemedicine, EHR modernization, EMS tech, dashboards, transport coordination, shared-service infrastructure.',links:[['Montana RHTP RFPs','https://dphhs.mt.gov/RuralHealthTransformationProgram/RHTP-RFPs'],['Montana RHTP page','https://dphhs.mt.gov/RuralHealthTransformationProgram/'],['Montana procurement portal','https://spb.mt.gov/eMACS-Resources']]},
-      {state:'Nebraska',region:'Northeast',status:'active',updated:true,signal:'Nebraska posted multiple active RHTP RFAs, including workforce, community health worker, chronic disease, and remote patient monitoring opportunities.',open:'RFAs released Mar. 2026',close:'Examples: Apr. 10, 2026 and Apr. 24, 2026, with rolling deadlines continuing into May and Jun. 2026',fit:'eHealth and mobile care, technology catalyst fund, RPM, mobile units, EHR coordination, clinical tech.',links:[['Nebraska grant opportunities','https://dhhs.ne.gov/Pages/Grant-Opportunities.aspx'],['Nebraska RHTP page','https://dhhs.ne.gov/Pages/Rural-Health-Transformation.aspx'],['Nebraska RPM RFA','https://dhhs.ne.gov/Grants%20and%20Contract%20Opportunity%20Docs/RHTP%20Initiative%204.4b%20RFA.pdf']]},
-      {state:'Nevada',region:'West',status:'active',updated:true,signal:'Nevada now has multiple live RHT funding opportunities, including the Rural Health System Flex Fund and Rural Tribal Health Transformation funding.',open:'Mar. 23, 2026 and Apr. 2, 2026',close:'Flex Fund Round 1 due Apr. 30, 2026; Tribal funding Round 1 due May 29, 2026',fit:'Capital equipment, rural infrastructure modernization, telehealth room buildouts, secure clinical environments.',links:[['Nevada Flex Fund RFA','https://www.medicaid.nv.gov/Downloads/provider/web_announcement_3873_20260323.pdf'],['Nevada Tribal funding RFA','https://www.medicaid.nv.gov/Downloads/provider/web_announcement_3883_20260402.pdf'],['Nevada announcements','https://www.medicaid.nv.gov/providers/newsannounce/default']]},
-      {state:'New Hampshire',region:'Northeast',status:'forecasted',updated:true,signal:'Official NH DHHS RHTP page is live and the state is moving forward under GO-NORTH oversight, but no public solicitation is posted yet.',open:'Award announced Dec. 29, 2025; GO-NORTH launched Mar. 2026',close:'TBD by state',fit:'Disease management, behavioral health, prenatal care, new access points, and rural initiative support.',links:[['New Hampshire RHTP page','https://www.dhhs.nh.gov/programs-services/medicaid/rural-health-transformation-program']]},
-      {state:'New Jersey',region:'Northeast',status:'active',updated:true,signal:'New Jersey now shows multiple live Rural Health Transformation opportunities in the state grant directory, including EMS/dispatch capability and community health workers in rural New Jersey.',open:'Grant directory listings active as of Apr. 7, 2026',close:'EMS and Dispatch Capability due Apr. 8, 2026; Community Health Workers in Rural New Jersey due Apr. 15, 2026',fit:'Telehealth, RPM, EMS/dispatch modernization, community health workers, provider training, and workflow modernization.',links:[['New Jersey grant directory','https://healthapps.nj.gov/noticeofgrant/noticegrants.aspx'],['NJ statewide RHT RFA','https://healthapps.nj.gov/noticeofgrant/documents/DOHP26RHT_rfa.pdf'],['NJ rural hospital capacity NOFA','https://healthapps.nj.gov/noticeofgrant/documents/OHCF26RHC.pdf']]},
-      {state:'New Mexico',region:'West',status:'monitor',updated:true,signal:'Official HCA page is live and says Year 1 funding will expand services, stabilize facilities, grow workforce, and introduce technology solutions, but no public solicitation is posted yet.',open:'Award announced Dec. 30, 2025',close:'TBD by state',fit:'Technology-enabled care, coordination tools, clinic stability, and workforce growth.',links:[['New Mexico RHTP page','https://www.hca.nm.gov/rural-health-transformation-program/']]},
-      {state:'New York',region:'Northeast',status:'monitor',updated:true,signal:'Official DOH transformation page is live with coordinated rural health partnership goals, but no public solicitation is posted yet.',open:'First-year funding announced Dec. 30, 2025',close:'TBD by state',fit:'Telehealth, clinical integration, partnership development, and rural care coordination.',links:[['New York RHTP page','https://health.ny.gov/facilities/transforming_rural_healthcare/']]},
-      {state:'North Carolina',region:'Southeast',status:'recently closed',updated:true,signal:'The NC ROOTS Hub Lead RFA closed on April 2, 2026 and North Carolina has moved into review and award planning for the May 1 notification window.',open:'Public launch Feb. 26, 2026',close:'Applications closed Apr. 2, 2026 at 5:00 p.m. EST; review runs Apr. 3-30, 2026',fit:'Regional telehealth and collaboration rooms, hub operations, data interoperability, secure care coordination.',links:[['North Carolina grant opportunities','https://www.ncdhhs.gov/divisions/office-rural-health/rural-health-transformation-program/rural-health-transformation-program-grant-opportunities'],['North Carolina webinar timeline','https://www.ncdhhs.gov/ncrhtp-presentation-feb-26-webinar/download?attachment='],['North Carolina RFA document','https://www.ncdhhs.gov/rfa-2026-nc-rural-organizations-orchestrating-transformation-sustainability/download?attachment=']]},
-      {state:'North Dakota',region:'Northeast',status:'active',updated:true,signal:'North Dakota announced its first RHTP funding opportunity: Rural Workforce Retention grants for critical access hospitals and owned clinics.',open:'Mar. 18, 2026',close:'Apr. 30, 2026 at 5:00 p.m. CT',fit:'Workforce stabilization, rural hospital retention, provider support, and future technology/cyber positioning.',links:[['North Dakota workforce funding','https://www.hhs.nd.gov/rural-health-transformation/funding/workforce'],['North Dakota funding page','https://www.hhs.nd.gov/rural-health-transformation/funding'],['North Dakota procurement portal','https://www.bidnetdirect.com/north-dakota']]},
-      {state:'Ohio',region:'Northeast',status:'active',updated:true,signal:'Official Ohio Department of Health pages include a searchable repository of solicitation invitations and reference documents for the RHTP.',open:'Solicitation repository live Jan. 2026',close:'Package-specific; see solicitation repository',fit:'Provider innovation, infrastructure, prevention, and active bid tracking.',links:[['Ohio solicitation invitations','https://odh.ohio.gov/know-our-programs/rural-health-transformation-program/solicitation-invitations/solicitation-invitations']]},
-      {state:'Oklahoma',region:'West',status:'active',updated:true,signal:'Community-Led Wellness Hubs Microgrants NOFO is live and Oklahoma has a dedicated RHTP funding page with application materials.',open:'Mar. 16, 2026',close:'Apr. 13, 2026 at 11:59 p.m. CT',fit:'Telehealth access points, small-capital tech buildouts, AV-enabled rooms, secure connectivity, community hubs.',links:[['Oklahoma RHTP funding page','https://oklahoma.gov/health/rhtp/rhtp-funding.html'],['Oklahoma funding announcement','https://oklahoma.gov/health/news---events/newsroom/2026/oklahoma-rural-health-transformation-program-announces-public-gr.html'],['Oklahoma procurement portal','https://www.ok.gov/dcs/solicit/app/contractSearch.php']]},
-      {state:'Oregon',region:'West',status:'forecasted',updated:true,signal:'Catalyst Awards RFGP timing is public with an early-April target; Oregon webinar materials and prep guidance are posted.',open:'Spring 2026 target: early Apr. 2026',close:'~45-day window; closes early summer 2026',fit:'Telehealth, IT modernization, cybersecurity, AI-enabled health tech, closed-loop referrals, digital access.',links:[['Oregon webinar deck','https://www.oregon.gov/oha/HPA/HP/Documents/2026.03.25%20-%20PDF%20-%20RHTP%20Webinar%20-%20Website%20Version.pdf']]},
-      {state:'Pennsylvania',region:'Northeast',status:'monitor',updated:true,signal:'Official Pennsylvania plan page is live and proposes eight regional Rural Care Collaboratives with telehealth and clinical integration, but no public solicitation is posted yet.',open:'Plan page active',close:'TBD by state',fit:'Regional collaboratives, shared services, telehealth, and clinical integration.',links:[['Pennsylvania RHTP plan','https://www.pa.gov/agencies/dhs/programs-services/healthcare/rural-health/rural-health-transformation-plan']]},
-      {state:'Rhode Island',region:'Northeast',status:'monitor',updated:true,signal:'Official Rhode Island RHTP pages are live and show a five-year federal funding stream, but no public solicitation is posted yet.',open:'Award announced Dec. 30, 2025',close:'TBD by state',fit:'FQHC expansion, hospital-at-home style care, and rural provider support.',links:[['Rhode Island RHTP page','https://eohhs.ri.gov/initiatives/rural-health-transformation-program']]},
-      {state:'South Carolina',region:'Southeast',status:'active',updated:true,signal:'South Carolina posted Year 1 RHTP grant applications and FAQs, including Connections to Care, Leveling Up, Wellness Within Reach, and Shoring Up to Sustainability.',open:'Grant posting Apr. 2, 2026',close:'Questions due Apr. 14, 2026; applications due Jun. 1, 2026; anticipated notice of award Jul. 31, 2026',fit:'Telehealth, RPM, EHR adoption, digital infrastructure, mobile care, capital-first tech and cyber deployments.',links:[['South Carolina grants page','https://www.scdhhs.gov/resources/grants'],['South Carolina Leveling Up RFA','https://www.scdhhs.gov/sites/dhhs/files/%282026-04-02%29%20Leveling%20Up%20SCDHHS-26-002.pdf'],['South Carolina RHTP FAQs','https://www.scdhhs.gov/sites/dhhs/files/%282026-04-02%29%20FAQs%20RHTP%20.pdf']]},
-      {state:'South Dakota',region:'Northeast',status:'active',updated:true,signal:'South Dakota released first- and second-round RFPs for digital health modernization, coordinated delivery of care methods, and project management.',open:'First round Feb. 25, 2026; second round Mar. 3, 2026',close:'Package-specific; see posting board and state RFP resources',fit:'Digital health modernization, coordinated care, workforce development, RPM, and project management support.',links:[['South Dakota RHT project page','https://doh.sd.gov/healthcare-professionals/rural-health/rural-health-transformation-project/'],['South Dakota posting board','https://postingboard.esmsolutions.com/3444a404-3818-494f-84c5-2a850acd7779/events'],['South Dakota RHT FAQs','https://doh.sd.gov/healthcare-professionals/rural-health/rural-health-transformation-project/rht-resources-faqs/']]},
-      {state:'Tennessee',region:'Mid-Atlantic',status:'active',updated:true,signal:'Tennessee is now directing applicants to Rural Health Resiliency Program grant funding opportunities through its rural health funding channels.',open:'Info session Mar. 31, 2026; funding page active',close:'See Tennessee funding opportunities for current deadlines',fit:'Health-tech, telehealth expansion, eConsult, HIE/interoperability, cybersecurity, maternal and behavioral virtual care.',links:[['Tennessee funding opportunities','https://www.tn.gov/health/funding-opportunities.html'],['Tennessee info session notice','https://www.tn.gov/health/news/2026/3/26/tn-rural-health-transformation-program-info-session.html'],['Tennessee RHTP page','https://www.tn.gov/health/rural.html']]},
-      {state:'Texas',region:'West',status:'forecasted',updated:true,signal:'Texas continues to route interested parties to its RFA portal and Rural Texas Strong program materials, but a live named RHTP opportunity was not found in this refresh.',open:'Program page active',close:'Monitor the HHSC RFA portal for postings',fit:'Large-scale rural transformation, workforce, access, and provider modernization opportunities.',links:[['Texas RHTP page','https://pfd.hhs.texas.gov/rural-health-transformation-program'],['Texas RFA portal','https://resources.hhs.texas.gov/rfa'],['Texas fact sheet','https://pfd.hhs.texas.gov/sites/default/files/documents/rural-hlth-prgm/rural-tx-strng-fact-sheet.pdf']]},
-      {state:'Utah',region:'West',status:'forecasted',updated:true,signal:'Utah’s funding opportunities page still labels the first project as forecasted with an estimated open date of Apr. 6, 2026 and additional opportunities scheduled for May.',open:'Estimated open date Apr. 6, 2026 for Behavioral Health–Primary Care Integration',close:'Additional forecasted opportunities scheduled for May 2026',fit:'Integrated care workflows, rural clinic modernization, provider collaboration, digital care support, training opportunities.',links:[['Utah funding opportunities','https://dhhs.utah.gov/ruralhealth/funding-opportunities/'],['Utah rural health page','https://dhhs.utah.gov/ruralhealth/'],['Utah procurement portal','https://utah.bonfirehub.com/portal/?tab=openOpportunities']]},
-      {state:'Vermont',region:'Northeast',status:'forecasted',updated:true,signal:'Official federal and legislative materials say subrecipients and awardees will be provided following state procurement processes and later submissions.',open:'Award updates posted Jan.–Mar. 2026',close:'State procurement timing TBD',fit:'Infrastructure, workforce, care model transformation, and later subrecipient opportunities.',links:[['Vermont TAGGS award page','https://taggs.hhs.gov/Detail/AwardDetail?arg_AwardNum=RHTCMS332047&arg_ProgOfficeCode=190']]},
-      {state:'Virginia',region:'Mid-Atlantic',status:'recently closed',updated:true,signal:'Assessment and Technical Assistance RFP completed; next funding RFPs announced.',open:'Feb. 11, 2026',close:'Closed Feb. 25, 2026; CareIQ RFPs anticipated Jul. 2026',fit:'Interoperability, provider productivity, workflow redesign, EHR optimization, cyber readiness, implementation planning.',links:[['Virginia Rural Vitality page','https://www.vhcf.org/rural-health/']]},
-      {state:'Washington',region:'West',status:'forecasted',updated:true,signal:'Official Washington materials show a Q2 2026 competitive bid process and a provider technology fund in the updated budget alignment.',open:'Budget revision posted Feb. 9, 2026',close:'Competitive bid process Q2 2026',fit:'Provider technology fund, rural training, workforce, and competitive bid opportunities.',links:[['Washington RHTP page','https://www.hca.wa.gov/about-hca/programs-and-initiatives/value-based-purchasing/rural-health-transformation-program']]},
-      {state:'West Virginia',region:'Mid-Atlantic',status:'active',updated:true,signal:'West Virginia’s RHTP page now includes a direct grant opportunities link alongside webinar resources and application information.',open:'Program page and grant link active Mar.–Apr. 2026',close:'See WV vendor and subrecipient portal for opportunity-specific deadlines',fit:'Technology investment, access expansion, workforce re-entry support, and community health growth.',links:[['West Virginia RHTP page','https://health.wv.gov/rural-health-transformation-program'],['West Virginia vendor portal','https://prd311.wvoasis.gov/PRDVSS1X1ERP/Advantage4'],['West Virginia RHTP news','https://health.wv.gov/news']]},
-      {state:'Wisconsin',region:'Northeast',status:'forecasted',updated:true,signal:'Wisconsin describes competitive grant funding opportunities and GFO-style implementation planning, but a live named RHTP GFO was not found in this refresh.',open:'Implementation webinar Feb. 5, 2026',close:'Competitive grant timing TBD by state',fit:'Closed-loop referrals, telehealth capabilities, workforce grants, and rural region competitive grants.',links:[['Wisconsin RHTP page','https://www.dhs.wisconsin.gov/business/rhtp.htm'],['Wisconsin solicitations list','https://www.dhs.wisconsin.gov/business/solicitations-list.htm'],['Wisconsin SORH','https://worh.org/']]},
-      {state:'Wyoming',region:'West',status:'monitor',updated:true,signal:'Official Wyoming RHTP page and document library are live, but no public solicitation is posted yet.',open:'Program page active',close:'TBD by state',fit:'Behavioral health, sustaining access to care, workforce development, and IT advances.',links:[['Wyoming RHTP page','https://health.wyo.gov/admin/rural-health-transformation-program/']]}
-    ];
+</div>
+<script>
+    let currentSort = { key: 'state', dir: 'asc' };
 
-    const eventData = [
-      {state:'National',type:'Conference',event:'Telehealth Everywhere 2026 Conference',date:'Apr. 7, 2026',time:'9:00 am to 5:00 pm CT',place:'Conference venue',location:'Bloomington, MN',desc:'TRC-listed annual telehealth conference hosted by the Great Plains Telehealth Resource & Assistance Center.',link:'https://telehealthresourcecenter.org/events/',label:'TRC Events page',iso:'2026-04-07'},
-      {state:'National',type:'Webinar',event:'Digital Navigation and TAPs: Tools and Partnerships for Increasing Healthcare Access',date:'Apr. 7, 2026',time:'10:00 am to 11:00 am PT',place:'Online webinar',location:'Virtual, National',desc:'TRC-listed webinar on digital health navigation and partnership tools for increasing access to care.',link:'https://telehealthresourcecenter.org/events/',label:'TRC Events page',iso:'2026-04-07'},
-      {state:'AZ/CO/NV/NM',type:'Webinar',event:'Preparing for your state\'s Rural Health Transformation',date:'Apr. 14, 2026',time:'12:00 pm to 1:00 pm PT',place:'Online webinar',location:'Virtual, Multi-state',desc:'TRC-listed webinar focused on telehealth opportunities and timelines across Arizona, Colorado, Nevada, and New Mexico.',link:'https://telehealthresourcecenter.org/events/',label:'TRC Events page',iso:'2026-04-14'},
-      {state:'National',type:'Conference',event:'SEARCH 2026 – The National Telehealth Research Symposium',date:'Jun. 2–3, 2026',time:'9:00 am to 5:00 pm ET',place:'Conference venue',location:'Chapel Hill, NC',desc:'TRC-listed national symposium on telehealth, connected health, and digital-care research.',link:'https://telehealthresourcecenter.org/events/',label:'TRC Events page',iso:'2026-06-02'},
-      {state:'California',type:'Webinar',event:'CalRHT Spring 2026 Webinar',date:'Apr. 21, 2026',time:'Time not posted',place:'Online webinar',location:'Virtual, CA',desc:'Upcoming California Rural Health Transformation Program webinar and listening session touchpoint.',link:'https://hcai.ca.gov/workforce/health-workforce/california-state-office-of-rural-health/',label:'Register / Source',iso:'2026-04-21'},
-      {state:'Kansas',type:'Webinar',event:'EBP Program Introductory Webinar',date:'Mar. 30, 2026',time:'Recording available',place:'Virtual recording',location:'Virtual, KS',desc:'Official Kansas RHTP webinar materials for the EBP Program with recording, slides, and FAQs.',link:'https://www.kdhe.ks.gov/2361/Rural-Health-Transformation-Program',label:'KDHE RHTP page',iso:'2026-03-30'},
-      {state:'Maine',type:'Webinar',event:'Maine RHTP Informational Webinar',date:'Mar. 26, 2026',time:'3:00 pm to 4:00 pm',place:'Zoom webinar',location:'Virtual, ME',desc:'Official Maine DHHS webinar for clinician and community partners on Year 1 funding and implementation updates.',link:'https://www.maine.gov/dhhs/oms/providers/provider-bulletins/maine-rural-health-transformation-program-rhtp-webinar-2026-03-13',label:'Maine webinar notice',iso:'2026-03-26'},
-      {state:'Maine',type:'Webinar',event:'Maine RHTP Informational Webinar',date:'Mar. 31, 2026',time:'12:00 pm to 1:00 pm',place:'Zoom webinar',location:'Virtual, ME',desc:'Second official Maine DHHS webinar session covering the same Year 1 RHTP update content.',link:'https://www.maine.gov/dhhs/oms/providers/provider-bulletins/maine-rural-health-transformation-program-rhtp-webinar-2026-03-13',label:'Maine webinar notice',iso:'2026-03-31'},
-      {state:'Maryland',type:'Meeting',event:'Maryland Statewide Telehealth Interest Group',date:'Apr. 17, 2026',time:'12:00 pm to 1:00 pm EST',place:'Google Meet',location:'Virtual, MD',desc:'Telehealth interest group meeting posted on the Maryland rural health page under the RHTP announcement area.',link:'https://health.maryland.gov/pophealth/pages/rural-health.aspx',label:'Maryland rural health page',iso:'2026-04-17'},
-      {state:'Montana',type:'Vendor Webinar',event:'RHTP Vendor Webinar',date:'Mar. 11, 2026',time:'10:00 am to 12:00 pm',place:'Online webinar',location:'Virtual, MT',desc:'Vendor-facing session for companies interested in upcoming RHTP RFPs, with recording and presentation links.',link:'https://dphhs.mt.gov/RuralHealthTransformationProgram/InformationforVendors',label:'Montana vendor page',iso:'2026-03-11'},
-      {state:'North Carolina',type:'Information Session',event:'NC ROOTS Hub Information Session',date:'Feb. 26, 2026',time:'Recording available',place:'Recorded virtual session',location:'Virtual, NC',desc:'Official North Carolina ROOTS Hub information session recording posted on the RHTP page.',link:'https://www.ncdhhs.gov/divisions/office-rural-health/rural-health-transformation-program',label:'North Carolina RHTP page',iso:'2026-02-26'},
-      {state:'Oregon',type:'Webinar',event:'Preparing for the RFGP',date:'Mar. 25, 2026',time:'Time not posted in deck',place:'Online webinar',location:'Virtual, OR',desc:'Public webinar materials for Catalyst Awards preparation; deck also notes another dedicated webinar targeted for early April 2026 and a spring webinar series.',link:'https://www.oregon.gov/oha/HPA/HP/Documents/2026.03.25%20-%20PDF%20-%20RHTP%20Webinar%20-%20Website%20Version.pdf',label:'Deck / Source',iso:'2026-03-25'},
-      {state:'South Carolina',type:'Webinar',event:'Stakeholder Webinar on RHTP',date:'Mar. 24, 2026',time:'9:00 am EDT',place:'Webex',location:'Virtual, SC',desc:'Official state webinar explaining first-year grant opportunities, expected outcomes, and application timing.',link:'https://www.scdhhs.gov/communications/stakeholder-meeting-rural-health-transformation-program-0',label:'South Carolina event page',iso:'2026-03-24'},
-      {state:'Tennessee',type:'Informational Session',event:'Statewide Session on RHTP Funding Opportunities',date:'Mar. 31, 2026',time:'10:00 am Central',place:'Online session',location:'Virtual, TN',desc:'Official Tennessee information session and overview on new Rural Health Transformation Program funding opportunities.',link:'https://www.tn.gov/health/news/2026/3/26/tn-rural-health-transformation-program-info-session.html',label:'Tennessee session notice',iso:'2026-03-31'},
-      {state:'Utah',type:'Informational Webinar',event:'Utah RHTP Informational Webinar',date:'Feb. 12, 2026',time:'Recording available',place:'Zoom',location:'Virtual, UT',desc:'Official Utah DHHS informational webinar on program development, award details, and Year 1 funding plan.',link:'https://dhhs.utah.gov/ruralhealth/',label:'Utah rural health page',iso:'2026-02-12'},
-      {state:'Wisconsin',type:'Webinar',event:'Wisconsin RHTP Implementation Webinar',date:'Feb. 5, 2026',time:'Recording available',place:'Recorded webinar',location:'Virtual, WI',desc:'Official Wisconsin DHS recorded webinar on the state’s implementation plans, partnerships, telehealth capabilities, and digital infrastructure.',link:'https://www.dhs.wisconsin.gov/business/rhtp.htm',label:'Wisconsin RHTP page',iso:'2026-02-05'}
-    ];
-
-    const resourceData = [
-      {name:'National Consortium of Telehealth Resource Centers (TRCs) – Centers Directory',coverage:'Regional and national telehealth assistance centers covering all states',why:'Use this official directory to identify the correct regional TRC, national policy support, and national technology support for each state.',link:'https://telehealthresourcecenter.org/centers/',label:'TRC Centers directory'},
-      {name:'National Consortium of Telehealth Resource Centers (TRCs) – Events',coverage:'National and multi-state telehealth events and webinar listings',why:'Use this official events page in weekly searches for telehealth conferences, webinars, and early-engagement opportunities relevant to RHTP and digital-health planning.',link:'https://telehealthresourcecenter.org/events/',label:'TRC Events page'},
-      {name:'National Rural Health Association – RHTP',coverage:'National rural health transformation resources and redesign support',why:'Use this page for national framing, policy context, and innovation-system-redesign guidance relevant to rural transformation work.',link:'https://www.ruralhealth.us/programs/center-for-rural-health-innovation-and-system-redesign/rural-health-transformation-program',label:'NRHA RHTP page'},
-      {name:'CMS – Rural Health Transformation Program Overview',coverage:'Federal program overview and official CMS program guidance',why:'Use this official CMS page for core program structure, federal framing, and source validation.',link:'https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview',label:'CMS RHT overview'},
-      {name:'NASHP – RHTP State Focus on Primary Care',coverage:'State policy analysis and primary-care transformation context',why:'Use for comparative state perspective and primary-care positioning around RHTP.',link:'https://nashp.org/rural-health-transformation-program-state-focus-on-primary-care/',label:'NASHP state focus'},
-      {name:'NOSORH – Rural Health Transformation',coverage:'State rural health office perspective and related resources',why:'Use for state-office alignment and rural health office partner context.',link:'https://nosorh.org/rural-health-transformation/',label:'NOSORH RHT page'},
-      {name:'Rural Health Information Hub – RHTP Resources',coverage:'National curated resource list for RHTP',why:'Use as a fast discovery source for state materials, background, and related transformation references.',link:'https://www.ruralhealthinfo.org/resources/lists/rhtp',label:'RHIhub RHTP resources'},
-      {name:'The Rural Center – Resources',coverage:'Rural systems, workforce, broadband, and community development resources',why:'Use for broader rural ecosystem context that can support Solutionz positioning.',link:'https://www.ruralcenter.org/resources',label:'The Rural Center resources'}
-    ];
-
-    const keywordGroups = [
-      { cls:'kw-proc', terms:['LETTER OF INTENT','NOTICE OF INTEREST','SOLICITATION','SOLICITATIONS','RFA','RFAS','RFP','RFPS','RFQ','RFQS','GFO','GFOS'] },
-      { cls:'kw-fund', terms:['NOFO','NOFOS','NOFA','NOFAS','FOA','FOAS','GRANT','GRANTS'] },
-      { cls:'kw-intent', terms:['LOI','LOIS','ROI','ROIS','NOI','NOIS'] },
-      { cls:'kw-event', terms:['WEBINAR','WEBINARS','EVENT','EVENTS','CONFERENCE','CONFERENCES'] },
-      { cls:'kw-award', terms:['AWARD','AWARDS'] }
-    ];
-
-    let currentSort = {key:'state',dir:'asc'};
-    let currentEventSort = {key:'date',dir:'asc'};
-    let visibleStatuses = new Set();
-    let visibleRegions = new Set();
-    let hidePastEvents = false;
-    let selectedEventType = '';
-    let showLinksCol = true;
-    let showResources = true;
-    let showEvents = true;
-
-    function exportPdf(){ window.print(); }
-    function escapeHtml(text){ return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-    function escapeRegex(text){ return text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
-    function highlightText(text){
-      let html = escapeHtml(text);
-      const flat = keywordGroups.flatMap(g => g.terms.map(t => ({term:t, cls:g.cls}))).sort((a,b)=>b.term.length-a.term.length);
-      flat.forEach(item => {
-        const re = new RegExp('\\b' + escapeRegex(item.term) + '\\b','gi');
-        html = html.replace(re, m => '<span class="' + item.cls + '">' + m + '</span>');
-      });
-      return html;
+    function getRows() {
+      return Array.from(document.querySelectorAll('#trackerTable tbody tr'));
     }
-    function renderLinks(links){ return '<div class="link-cell">' + links.map(([label,url]) => '<a href="' + escapeHtml(url) + '">' + escapeHtml(label) + '</a>').join('') + '</div>'; }
-    function statusBadge(status){ const cls = status === 'active' ? 'active' : status === 'recently closed' ? 'closed' : status === 'forecasted' ? 'forecast' : 'monitor'; return '<span class="status ' + cls + '">' + escapeHtml(status) + '</span>'; }
 
-    function renderStates(){
+    function sortRows(key) {
       const tbody = document.querySelector('#trackerTable tbody');
-      tbody.innerHTML = stateData.map(d => '<tr data-state="' + escapeHtml(d.state) + '" data-region="' + escapeHtml(d.region) + '" data-status="' + escapeHtml(d.status) + '">'
-        + '<td><strong>' + escapeHtml(d.state) + (d.updated ? ' <span class="updated-star">★</span>' : '') + '</strong></td>'
-        + '<td>' + escapeHtml(d.region) + '</td>'
-        + '<td>' + statusBadge(d.status) + '</td>'
-        + '<td>' + highlightText(d.signal) + '</td>'
-        + '<td>' + escapeHtml(d.open) + '</td>'
-        + '<td>' + escapeHtml(d.close) + '</td>'
-        + '<td>' + escapeHtml(d.fit) + '</td>'
-        + '<td>' + renderLinks(d.links) + '</td>'
-        + '</tr>').join('');
-      document.getElementById('stateEmailSelect').innerHTML = '<option value="">Select state…</option>' + stateData.map(d => '<option value="' + escapeHtml(d.state) + '">' + escapeHtml(d.state) + '</option>').join('');
-    }
-
-    function renderEvents(){
-      const tbody = document.querySelector('#eventsTable tbody');
-      tbody.innerHTML = eventData.map(e => '<tr data-eventstate="' + escapeHtml(e.state) + '" data-eventdate="' + escapeHtml(e.iso) + '" data-eventtype="' + escapeHtml(String(e.type).toLowerCase()) + '">'
-        + '<td><strong>' + escapeHtml(e.state) + '</strong></td>'
-        + '<td>' + escapeHtml(e.type) + '</td>'
-        + '<td>' + highlightText(e.event) + '</td>'
-        + '<td>' + escapeHtml(e.date + (e.time && e.time !== 'Time not posted' ? ' | ' + e.time : '')) + '</td>'
-        + '<td>' + escapeHtml(e.place) + '</td>'
-        + '<td>' + escapeHtml(e.location) + '</td>'
-        + '<td>' + highlightText(e.desc) + '</td>'
-        + '<td><a href="' + escapeHtml(e.link) + '">' + escapeHtml(e.label) + '</a></td>'
-        + '</tr>').join('');
-      populateEventTypeFilter();
-    }
-
-    function renderResources(){
-      const tbody = document.querySelector('#resourcesTable tbody');
-      tbody.innerHTML = resourceData.map(r => '<tr><td><strong>' + escapeHtml(r.name) + '</strong></td><td>' + escapeHtml(r.coverage) + '</td><td>' + escapeHtml(r.why) + '</td><td><a href="' + escapeHtml(r.link) + '">' + escapeHtml(r.label) + '</a></td></tr>').join('');
-    }
-
-    function populateEventTypeFilter(){
-      const select = document.getElementById('eventTypeFilter');
-      const types = [...new Set(eventData.map(e => e.type))].sort((a,b)=>a.localeCompare(b));
-      select.innerHTML = '<option value="">All event types</option>' + types.map(type => '<option value="' + escapeHtml(type.toLowerCase()) + '">' + escapeHtml(type) + '</option>').join('');
-      select.value = selectedEventType;
-    }
-
-    function sortRows(key){
-      const tbody = document.querySelector('#trackerTable tbody');
-      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const rows = getRows();
       const dir = currentSort.key === key && currentSort.dir === 'asc' ? 'desc' : 'asc';
-      rows.sort((a,b)=>{
+
+      rows.sort((a, b) => {
         const av = (a.dataset[key] || '').toLowerCase();
         const bv = (b.dataset[key] || '').toLowerCase();
-        if(av < bv) return dir === 'asc' ? -1 : 1;
-        if(av > bv) return dir === 'asc' ? 1 : -1;
+        if (av < bv) return dir === 'asc' ? -1 : 1;
+        if (av > bv) return dir === 'asc' ? 1 : -1;
+
+        const as = (a.dataset.state || '').toLowerCase();
+        const bs = (b.dataset.state || '').toLowerCase();
+        if (as < bs) return -1;
+        if (as > bs) return 1;
         return 0;
       });
-      rows.forEach(r => tbody.appendChild(r));
-      currentSort = {key,dir};
+
+      rows.forEach(row => tbody.appendChild(row));
+      currentSort = { key, dir };
       updateSortIndicators();
+      applyFilters();
     }
 
-    function sortEventRows(key){
+    function updateSortIndicators() {
+      const stateHeader = document.getElementById('stateHeader');
+      const regionHeader = document.getElementById('regionHeader');
+      stateHeader.setAttribute('data-indicator', currentSort.key === 'state' ? (currentSort.dir === 'asc' ? '▲' : '▼') : '↕');
+      regionHeader.setAttribute('data-indicator', currentSort.key === 'region' ? (currentSort.dir === 'asc' ? '▲' : '▼') : '↕');
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const region = document.getElementById('regionFilter').value;
+      const updatedOnly = document.getElementById('updatedOnly').checked;
+      const rows = getRows();
+      let visible = 0;
+
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const matchesSearch = !search || text.includes(search);
+        const matchesStatus = !status || row.dataset.status === status;
+        const matchesRegion = !region || row.dataset.region === region;
+        const matchesUpdated = !updatedOnly || row.dataset.updated === 'true';
+        const show = matchesSearch && matchesStatus && matchesRegion && matchesUpdated;
+        row.classList.toggle('hidden-row', !show);
+        if (show) visible++;
+      });
+
+      document.getElementById('visibleCount').textContent = `Showing ${visible} of 50 states`;
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('regionFilter').value = '';
+      document.getElementById('updatedOnly').checked = false;
+      applyFilters();
+    }
+
+    updateSortIndicators();
+    applyFilters();
+  
+    let currentEventSort = { key: 'date', dir: 'asc' };
+    const eventData = [{"state": "National", "type": "Conference", "event": "Telehealth Everywhere 2026 Conference", "date": "Apr. 7, 2026", "time": "9:00 am to 5:00 pm CT", "place": "Conference venue", "location": "Bloomington, MN", "desc": "TRC-listed annual telehealth conference hosted by the Great Plains Telehealth Resource & Assistance Center.", "link": "https://telehealthresourcecenter.org/events/", "label": "TRC Events page", "iso": "2026-04-07"}, {"state": "National", "type": "Webinar", "event": "Digital Navigation and TAPs: Tools and Partnerships for Increasing Healthcare Access", "date": "Apr. 7, 2026", "time": "10:00 am to 11:00 am PT", "place": "Online webinar", "location": "Virtual, National", "desc": "TRC-listed webinar on digital health navigation and partnership tools for increasing access to care.", "link": "https://telehealthresourcecenter.org/events/", "label": "TRC Events page", "iso": "2026-04-07"}, {"state": "AZ/CO/NV/NM", "type": "Webinar", "event": "Preparing for your state's Rural Health Transformation", "date": "Apr. 14, 2026", "time": "12:00 pm to 1:00 pm PT", "place": "Online webinar", "location": "Virtual, Multi-state", "desc": "TRC-listed webinar focused on telehealth opportunities and timelines across Arizona, Colorado, Nevada, and New Mexico.", "link": "https://telehealthresourcecenter.org/events/", "label": "TRC Events page", "iso": "2026-04-14"}, {"state": "National", "type": "Conference", "event": "SEARCH 2026 – The National Telehealth Research Symposium", "date": "Jun. 2–3, 2026", "time": "9:00 am to 5:00 pm ET", "place": "Conference venue", "location": "Chapel Hill, NC", "desc": "TRC-listed national symposium on telehealth, connected health, and digital-care research.", "link": "https://telehealthresourcecenter.org/events/", "label": "TRC Events page", "iso": "2026-06-02"}, {"state": "California", "type": "Webinar", "event": "CalRHT Spring 2026 Webinar", "date": "Apr. 21, 2026", "time": "Time not posted", "place": "Online webinar", "location": "Virtual, CA", "desc": "Upcoming California Rural Health Transformation Program webinar and listening session touchpoint.", "link": "https://hcai.ca.gov/workforce/health-workforce/california-state-office-of-rural-health/", "label": "Register / Source", "iso": "2026-04-21"}, {"state": "Kansas", "type": "Webinar", "event": "EBP Program Introductory Webinar", "date": "Mar. 30, 2026", "time": "Recording available", "place": "Virtual recording", "location": "Virtual, KS", "desc": "Official Kansas RHTP webinar materials for the EBP Program with recording, slides, and FAQs.", "link": "https://www.kdhe.ks.gov/2361/Rural-Health-Transformation-Program", "label": "KDHE RHTP page", "iso": "2026-03-30"}, {"state": "Maine", "type": "Webinar", "event": "Maine RHTP Informational Webinar", "date": "Mar. 26, 2026", "time": "3:00 pm to 4:00 pm", "place": "Zoom webinar", "location": "Virtual, ME", "desc": "Official Maine DHHS webinar for clinician and community partners on Year 1 funding and implementation updates.", "link": "https://www.maine.gov/dhhs/oms/providers/provider-bulletins/maine-rural-health-transformation-program-rhtp-webinar-2026-03-13", "label": "Maine webinar notice", "iso": "2026-03-26"}, {"state": "Maine", "type": "Webinar", "event": "Maine RHTP Informational Webinar", "date": "Mar. 31, 2026", "time": "12:00 pm to 1:00 pm", "place": "Zoom webinar", "location": "Virtual, ME", "desc": "Second official Maine DHHS webinar session covering the same Year 1 RHTP update content.", "link": "https://www.maine.gov/dhhs/oms/providers/provider-bulletins/maine-rural-health-transformation-program-rhtp-webinar-2026-03-13", "label": "Maine webinar notice", "iso": "2026-03-31"}, {"state": "Maryland", "type": "Meeting", "event": "Maryland Statewide Telehealth Interest Group", "date": "Apr. 17, 2026", "time": "12:00 pm to 1:00 pm EST", "place": "Google Meet", "location": "Virtual, MD", "desc": "Telehealth interest group meeting posted on the Maryland rural health page under the RHTP announcement area.", "link": "https://health.maryland.gov/pophealth/pages/rural-health.aspx", "label": "Maryland rural health page", "iso": "2026-04-17"}, {"state": "Montana", "type": "Vendor Webinar", "event": "RHTP Vendor Webinar", "date": "Mar. 11, 2026", "time": "10:00 am to 12:00 pm", "place": "Online webinar", "location": "Virtual, MT", "desc": "Vendor-facing session for companies interested in upcoming RHTP RFPs, with recording and presentation links.", "link": "https://dphhs.mt.gov/RuralHealthTransformationProgram/InformationforVendors", "label": "Montana vendor page", "iso": "2026-03-11"}, {"state": "North Carolina", "type": "Information Session", "event": "NC ROOTS Hub Information Session", "date": "Feb. 26, 2026", "time": "Recording available", "place": "Recorded virtual session", "location": "Virtual, NC", "desc": "Official North Carolina ROOTS Hub information session recording posted on the RHTP page.", "link": "https://www.ncdhhs.gov/divisions/office-rural-health/rural-health-transformation-program", "label": "North Carolina RHTP page", "iso": "2026-02-26"}, {"state": "Oregon", "type": "Webinar", "event": "Preparing for the RFGP", "date": "Mar. 25, 2026", "time": "Time not posted in deck", "place": "Online webinar", "location": "Virtual, OR", "desc": "Public webinar materials for Catalyst Awards preparation; deck also notes another dedicated webinar targeted for early April 2026 and a spring webinar series.", "link": "https://www.oregon.gov/oha/HPA/HP/Documents/2026.03.25%20-%20PDF%20-%20RHTP%20Webinar%20-%20Website%20Version.pdf", "label": "Deck / Source", "iso": "2026-03-25"}, {"state": "South Carolina", "type": "Webinar", "event": "Stakeholder Webinar on RHTP", "date": "Mar. 24, 2026", "time": "9:00 am EDT", "place": "Webex", "location": "Virtual, SC", "desc": "Official state webinar explaining first-year grant opportunities, expected outcomes, and application timing.", "link": "https://www.scdhhs.gov/communications/stakeholder-meeting-rural-health-transformation-program-0", "label": "South Carolina event page", "iso": "2026-03-24"}, {"state": "Tennessee", "type": "Informational Session", "event": "Statewide Session on RHTP Funding Opportunities", "date": "Mar. 31, 2026", "time": "10:00 am Central", "place": "Online session", "location": "Virtual, TN", "desc": "Official Tennessee information session and overview on new Rural Health Transformation Program funding opportunities.", "link": "https://www.tn.gov/health/news/2026/3/26/tn-rural-health-transformation-program-info-session.html", "label": "Tennessee session notice", "iso": "2026-03-31"}, {"state": "Utah", "type": "Informational Webinar", "event": "Utah RHTP Informational Webinar", "date": "Feb. 12, 2026", "time": "Recording available", "place": "Zoom", "location": "Virtual, UT", "desc": "Official Utah DHHS informational webinar on program development, award details, and Year 1 funding plan.", "link": "https://dhhs.utah.gov/ruralhealth/", "label": "Utah rural health page", "iso": "2026-02-12"}, {"state": "Wisconsin", "type": "Webinar", "event": "Wisconsin RHTP Implementation Webinar", "date": "Feb. 5, 2026", "time": "Recording available", "place": "Recorded webinar", "location": "Virtual, WI", "desc": "Official Wisconsin DHS recorded webinar on the state’s implementation plans, partnerships, telehealth capabilities, and digital infrastructure.", "link": "https://www.dhs.wisconsin.gov/business/rhtp.htm", "label": "Wisconsin RHTP page", "iso": "2026-02-05"}];
+    const EVENT_TODAY = new Date('2026-04-09T00:00:00');
+
+    function renderEvents() {
       const tbody = document.querySelector('#eventsTable tbody');
-      const rows = Array.from(tbody.querySelectorAll('tr'));
+      tbody.innerHTML = eventData.map(e => `
+        <tr data-eventstate="${e.state}" data-eventdate="${e.iso}" data-eventtype="${String(e.type).toLowerCase()}">
+          <td><strong>${e.state}</strong></td>
+          <td>${e.type}</td>
+          <td>${e.event}</td>
+          <td>${e.date}${e.time ? ' | ' + e.time : ''}</td>
+          <td>${e.place}</td>
+          <td>${e.location}</td>
+          <td>${e.desc}</td>
+          <td><a href="${e.link}">${e.label}</a></td>
+        </tr>
+      `).join('');
+      const select = document.getElementById('eventTypeFilter');
+      const types = [...new Set(eventData.map(e => e.type))].sort((a,b) => a.localeCompare(b));
+      select.innerHTML = '<option value="">All event types</option>' + types.map(type => `<option value="${type.toLowerCase()}">${type}</option>`).join('');
+      updateEventSortIndicators();
+      applyEventFilters();
+    }
+
+    function getEventRows() {
+      return Array.from(document.querySelectorAll('#eventsTable tbody tr'));
+    }
+
+    function sortEventRows(key) {
+      const tbody = document.querySelector('#eventsTable tbody');
+      const rows = getEventRows();
       const dir = currentEventSort.key === key && currentEventSort.dir === 'asc' ? 'desc' : 'asc';
-      rows.sort((a,b)=>{
+      rows.sort((a, b) => {
         const av = key === 'date' ? (a.dataset.eventdate || '') : (a.dataset.eventstate || '').toLowerCase();
         const bv = key === 'date' ? (b.dataset.eventdate || '') : (b.dataset.eventstate || '').toLowerCase();
-        if(av < bv) return dir === 'asc' ? -1 : 1;
-        if(av > bv) return dir === 'asc' ? 1 : -1;
+        if (av < bv) return dir === 'asc' ? -1 : 1;
+        if (av > bv) return dir === 'asc' ? 1 : -1;
         return 0;
       });
-      rows.forEach(r => tbody.appendChild(r));
-      currentEventSort = {key,dir};
-      updateSortIndicators();
+      rows.forEach(row => tbody.appendChild(row));
+      currentEventSort = { key, dir };
+      updateEventSortIndicators();
+      applyEventFilters();
     }
 
-    function updateSortIndicators(){
-      document.getElementById('stateHeader').setAttribute('data-indicator', currentSort.key === 'state' ? (currentSort.dir === 'asc' ? '▲' : '▼') : '↕');
-      document.getElementById('regionHeader').setAttribute('data-indicator', currentSort.key === 'region' ? (currentSort.dir === 'asc' ? '▲' : '▼') : '↕');
-      document.getElementById('statusHeader').setAttribute('data-indicator', currentSort.key === 'status' ? (currentSort.dir === 'asc' ? '▲' : '▼') : '↕');
+    function updateEventSortIndicators() {
       document.getElementById('eventStateHeader').setAttribute('data-indicator', currentEventSort.key === 'state' ? (currentEventSort.dir === 'asc' ? '▲' : '▼') : '↕');
       document.getElementById('eventDateHeader').setAttribute('data-indicator', currentEventSort.key === 'date' ? (currentEventSort.dir === 'asc' ? '▲' : '▼') : '↕');
     }
 
-    function applyStateFilters(){
-      document.querySelectorAll('#trackerTable tbody tr').forEach(r => {
-        const statusOk = visibleStatuses.size === 0 || visibleStatuses.has(r.dataset.status);
-        const regionOk = visibleRegions.size === 0 || visibleRegions.has(r.dataset.region);
-        r.classList.toggle('hidden-row', !(statusOk && regionOk));
+    function applyEventFilters() {
+      const type = (document.getElementById('eventTypeFilter').value || '').toLowerCase();
+      const hidePast = document.getElementById('hidePastEvents').checked;
+      let visible = 0;
+      getEventRows().forEach(row => {
+        const isPast = Date.parse((row.dataset.eventdate || '') + 'T00:00:00') < EVENT_TODAY.getTime();
+        const matchesType = !type || row.dataset.eventtype === type;
+        const show = matchesType && !(hidePast && isPast);
+        row.classList.toggle('hidden-row', !show);
+        if (show) visible++;
       });
-      updateCounts();
-    }
-    function toggleStatusFilter(status){ if(visibleStatuses.has(status)) visibleStatuses.delete(status); else visibleStatuses.add(status); updateFilterButtons(); applyStateFilters(); }
-    function showAllStatuses(){ visibleStatuses = new Set(); updateFilterButtons(); applyStateFilters(); }
-    function toggleRegionFilter(region){ if(visibleRegions.has(region)) visibleRegions.delete(region); else visibleRegions.add(region); updateFilterButtons(); applyStateFilters(); }
-    function showAllRegions(){ visibleRegions = new Set(); updateFilterButtons(); applyStateFilters(); }
-    function updateFilterButtons(){
-      ['active','recently closed','forecasted','monitor'].forEach(s => { const el = document.getElementById('status-' + s.replace(/ /g,'-') + '-btn'); if(el) el.classList.toggle('is-off', visibleStatuses.size === 0 || !visibleStatuses.has(s)); });
-      ['Mid-Atlantic','Northeast','Southeast','West'].forEach(r => { const el = document.getElementById('region-' + r.toLowerCase().replace(/ /g,'-') + '-btn'); if(el) el.classList.toggle('is-off', visibleRegions.size === 0 || !visibleRegions.has(r)); });
+      document.getElementById('eventCount').textContent = `Showing ${visible} of ${eventData.length} events`;
     }
 
-    function setEventTypeFilter(value){ selectedEventType = String(value || '').toLowerCase(); applyEventFilters(); }
-    function togglePastEvents(){ hidePastEvents = !hidePastEvents; applyEventFilters(); }
-    function applyEventFilters(){
-      document.querySelectorAll('#eventsTable tbody tr').forEach(r => {
-        const isPast = Date.parse((r.dataset.eventdate || '') + 'T00:00:00') < TODAY.getTime();
-        const typeOk = !selectedEventType || (r.dataset.eventtype || '') === selectedEventType;
-        r.classList.toggle('hidden-row', (hidePastEvents && isPast) || !typeOk);
-      });
-      document.getElementById('togglePastBtn').textContent = hidePastEvents ? 'Show past dates' : 'Hide past dates';
-      updateCounts();
+    function resetEventFilters() {
+      document.getElementById('eventTypeFilter').value = '';
+      document.getElementById('hidePastEvents').checked = false;
+      applyEventFilters();
     }
 
-    function toggleLinksCol(){
-      showLinksCol = !showLinksCol;
-      document.querySelectorAll('#trackerTable tr').forEach(r => { if(r.children[7]) r.children[7].classList.toggle('hidden-col', !showLinksCol); });
-      document.getElementById('toggleLinksBtn').textContent = showLinksCol ? 'Hide links' : 'Show links';
-    }
-    function toggleResources(){
-      showResources = !showResources;
-      document.getElementById('resourcesSection').style.display = showResources ? 'block' : 'none';
-      document.getElementById('resourcesTable').style.display = showResources ? 'table' : 'none';
-      document.getElementById('toggleResourcesBtn').textContent = showResources ? 'Hide resources' : 'Show resources';
-    }
-    function toggleEventsList(){
-      showEvents = !showEvents;
-      document.getElementById('eventsSection').style.display = showEvents ? 'block' : 'none';
-      document.getElementById('eventsTools').style.display = showEvents ? 'flex' : 'none';
-      document.getElementById('eventsTable').style.display = showEvents ? 'table' : 'none';
-      document.getElementById('toggleEventsBtn').textContent = showEvents ? 'Hide events list' : 'Show events list';
-      updateCounts();
-    }
-
-    function visibleStateRows(){ return Array.from(document.querySelectorAll('#trackerTable tbody tr')).filter(r => !r.classList.contains('hidden-row')); }
-    function visibleEventRows(){ return Array.from(document.querySelectorAll('#eventsTable tbody tr')).filter(r => !r.classList.contains('hidden-row')); }
-    function updateCounts(){
-      const states = visibleStateRows();
-      const counts = {active:0,'recently closed':0,forecasted:0,monitor:0};
-      states.forEach(r => { counts[r.dataset.status] += 1; });
-      document.getElementById('filterCounts').textContent = 'Visible states: ' + states.length + ' of ' + stateData.length + ' | Active: ' + counts.active + ' | Recently closed: ' + counts['recently closed'] + ' | Forecasted: ' + counts.forecasted + ' | Monitor: ' + counts.monitor;
-      document.getElementById('eventCounts').textContent = showEvents ? 'Visible events: ' + visibleEventRows().length + ' of ' + eventData.length : 'Events hidden';
-    }
-
-    function rowSummary(row){
-      const cells = row.querySelectorAll('td');
-      const links = Array.from(cells[7].querySelectorAll('a')).map(a => a.textContent + ': ' + a.href).join(' | ');
-      return {state:cells[0].innerText.replace('★','').trim(),region:cells[1].innerText.trim(),status:cells[2].innerText.trim(),signal:cells[3].innerText.trim(),open:cells[4].innerText.trim(),close:cells[5].innerText.trim(),fit:cells[6].innerText.trim(),links};
-    }
-    function openEmail(subject, body){
-      const to = document.getElementById('emailTo').value.trim();
-      const text = body.length > 3500 ? body.slice(0,3440) + '\n\n[Message trimmed for email length.]' : body;
-      window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
-    }
-    function emailSelectedState(){
-      const state = document.getElementById('stateEmailSelect').value;
-      if(!state) return;
-      const row = Array.from(document.querySelectorAll('#trackerTable tbody tr')).find(r => r.dataset.state === state);
-      if(!row) return;
-      const s = rowSummary(row);
-      const related = eventData.filter(e => e.state === state).map(e => e.event + ' | ' + e.date + ' | ' + e.link).join('\n');
-      let body = 'State report: ' + s.state + '\n\nRegion: ' + s.region + '\nStatus: ' + s.status + '\nOpen / posted: ' + s.open + '\nClose / next date: ' + s.close + '\n\nCurrent signal:\n' + s.signal + '\n\nSolutionz fit:\n' + s.fit + '\n\nLinks:\n' + (s.links || '—');
-      if(related) body += '\n\nRelated events:\n' + related;
-      openEmail('RHTP State Report | ' + s.state, body);
-    }
-    function emailFilteredReport(){
-      let body = 'Filtered RHTP report\nGenerated from the interactive master on April 7, 2026.\n\n';
-      visibleStateRows().forEach(r => { const s = rowSummary(r); body += s.state + ' | ' + s.region + ' | ' + s.status + ' | Open: ' + s.open + ' | Close: ' + s.close + '\nSignal: ' + s.signal + '\nLinks: ' + (s.links || '—') + '\n\n'; });
-      openEmail('RHTP Filtered Report | ' + visibleStateRows().length + ' states', body);
-    }
-    function emailFullReport(){
-      let body = 'Full RHTP report\nGenerated from the interactive master on April 7, 2026.\n\n';
-      Array.from(document.querySelectorAll('#trackerTable tbody tr')).forEach(r => { const s = rowSummary(r); body += s.state + ' | ' + s.region + ' | ' + s.status + ' | Open: ' + s.open + ' | Close: ' + s.close + '\nSignal: ' + s.signal + '\nLinks: ' + (s.links || '—') + '\n\n'; });
-      openEmail('RHTP Full Report | 50 states', body);
-    }
-
-    function enableColumnResize(){
+    function enableColumnResize() {
       document.querySelectorAll('table thead th').forEach(th => {
-        if(th.querySelector('.resize-handle')) return;
+        if (th.querySelector('.resize-handle')) return;
         const handle = document.createElement('span');
         handle.className = 'resize-handle';
+        handle.title = 'Drag to resize column';
         th.appendChild(handle);
-        let startX = 0, startW = 0;
+
+        let startX = 0;
+        let startW = 0;
+
+        const startResize = pageX => {
+          startX = pageX;
+          startW = th.offsetWidth;
+        };
+
+        const onMove = pageX => {
+          th.style.width = Math.max(90, startW + (pageX - startX)) + 'px';
+        };
+
         handle.addEventListener('mousedown', e => {
+          e.preventDefault();
           e.stopPropagation();
-          startX = e.pageX; startW = th.offsetWidth;
-          const onMove = ev => { th.style.width = Math.max(90, startW + (ev.pageX - startX)) + 'px'; };
-          const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
-          document.addEventListener('mousemove', onMove);
-          document.addEventListener('mouseup', onUp);
+          startResize(e.pageX);
+
+          const move = ev => onMove(ev.pageX);
+          const up = () => {
+            document.removeEventListener('mousemove', move);
+            document.removeEventListener('mouseup', up);
+          };
+
+          document.addEventListener('mousemove', move);
+          document.addEventListener('mouseup', up);
         });
+
+        handle.addEventListener('touchstart', e => {
+          if (!e.touches.length) return;
+          e.preventDefault();
+          e.stopPropagation();
+          startResize(e.touches[0].pageX);
+
+          const move = ev => {
+            if (!ev.touches.length) return;
+            onMove(ev.touches[0].pageX);
+          };
+          const up = () => {
+            document.removeEventListener('touchmove', move);
+            document.removeEventListener('touchend', up);
+            document.removeEventListener('touchcancel', up);
+          };
+
+          document.addEventListener('touchmove', move, { passive: false });
+          document.addEventListener('touchend', up);
+          document.addEventListener('touchcancel', up);
+        }, { passive: false });
       });
     }
 
-    function runChecks(){
-      const checks = [];
-      checks.push(document.querySelectorAll('#trackerTable tbody tr').length === 50 ? '50 states ok' : 'state row count mismatch');
-      checks.push(document.querySelectorAll('#eventsTable tbody tr').length === 16 ? 'event row count ok' : 'event row count mismatch');
-      checks.push(document.querySelectorAll('#resourcesTable tbody tr').length === 8 ? 'resource row count ok' : 'resource row count mismatch');
-      checks.push(document.getElementById('eventTypeFilter') ? 'event filter ok' : 'event filter missing');
-      document.getElementById('devCheck').innerHTML = '<strong>Self-check:</strong> ' + checks.join(' | ');
-    }
-
-    renderStates();
-    renderEvents();
-    renderResources();
-    updateSortIndicators();
-    updateFilterButtons();
-    applyStateFilters();
-    applyEventFilters();
     enableColumnResize();
-    runChecks();
-  </script>
+    renderEvents();
+</script>
 </body>
 </html>
